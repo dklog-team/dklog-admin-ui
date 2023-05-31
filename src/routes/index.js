@@ -24,6 +24,13 @@ const routes = [
         component: () => import('./../views/PostAdmin.vue'),
     },
     {
+        path: '/student',
+        meta: {
+            hide: true,
+        },
+        component: () => import('./../views/StudentAdmin.vue'),
+    },
+    {
         path: '/comment',
         meta: {
             hide: true,
