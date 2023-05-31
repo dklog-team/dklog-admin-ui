@@ -23,7 +23,7 @@
           <label for="password" class="block text-sm font-medium leading-6 text-gray-900">비밀번호</label>
         </div>
         <div class="mt-2">
-          <input v-model="requestData.password" id="password" type="text" placeholder="비밀번호" class="input input-bordered w-full" />
+          <input v-model="requestData.password" id="password" type="password" placeholder="비밀번호" class="input input-bordered w-full" />
         </div>
       </div>
 
