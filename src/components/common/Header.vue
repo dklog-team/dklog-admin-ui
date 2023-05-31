@@ -10,8 +10,8 @@
               </svg>
             </div>
           </div>
-          <span class="text-gray-600">admin</span>
-          <button type="button" class="btn btn-sm text-white">로그아웃</button>
+          <span class="text-gray-600">{{ username }}</span>
+          <button type="button" class="btn btn-sm text-white" @click="clickLogoutBtn">로그아웃</button>
         </div>
       </div>
     </nav>
@@ -19,7 +19,29 @@
 </template>
 
 <script setup>
+import {authStore} from "../../store/auth.js";
+import {onBeforeMount, ref} from "vue";
+import {useCookies} from "vue3-cookies";
+import {getUsername} from "../../api/admin.js";
 
+const auth = authStore()
+const cookies = useCookies().cookies
+
+const username = ref('')
+
+onBeforeMount(async () => {
+  let adminId = cookies.get('adminId');
+  const requestData = {
+    adminId,
+  }
+  let response = await getUsername(requestData);
+  console.log(response.data)
+  username.value = response.data
+})
+
+const clickLogoutBtn = async () => {
+  auth.logout()
+}
 </script>
 
 <style scoped>
