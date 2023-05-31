@@ -22,6 +22,13 @@ const routes = [
         },
         component: () => import('./../views/PostAdmin.vue'),
     },
+    {
+        path: '/student',
+        meta: {
+            hide: true,
+        },
+        component: () => import('./../views/StudentAdmin.vue'),
+    },
 ]
 
 const router = createRouter({
