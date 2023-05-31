@@ -29,7 +29,7 @@
           <span class="text-md font-medium">글 관리</span>
         </a>
         <a
-            href="#"
+            href="/comment"
             class="flex items-center gap-2 rounded-lg bg-gray-100 px-3 py-3 text-gray-500 hover:bg-gray-200 hover:text-gray-700"
         >
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">

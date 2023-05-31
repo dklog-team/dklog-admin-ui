@@ -1,9 +1,27 @@
 import axios, {HttpStatusCode} from "axios";
+import {useCookies} from "vue3-cookies";
+import {authStore} from "../../store/auth.js";
 
 const request = axios.create({
     baseURL: 'http://localhost:8085',
     timeout: 30000,
 })
+
+request.interceptors.request.use(
+    config => {
+        const cookies = useCookies().cookies
+        if (cookies.get('token')) {
+            config.headers['Authorization'] = cookies.get('token')
+            config.headers['adminId'] = cookies.get('adminId')
+        }
+        console.log(config.headers)
+        return config
+    },
+    error => {
+        console.log(error) // for debug
+        Promise.reject(error)
+    }
+)
 
 request.interceptors.response.use(
     response => {
@@ -13,9 +31,13 @@ request.interceptors.response.use(
         }
         return response
     },
-    error => {
+    async (error) => {
         alert(error.response.data.message)
-        return Promise.reject(error)
+        if (error.response.data.message.indexOf('인증') !== -1) {
+            console.log('인증')
+            authStore().logout()
+        }
+        return Promise.reject(error);
     }
 )
 
