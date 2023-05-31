@@ -6,7 +6,7 @@
     </div>
     <div class="flex justify-end">
       <button class="btn btn-ghost w-16 px-1">삭제</button>
-      <button class="btn btn-secondary w-16 px-1">등록</button>
+      <button class="btn btn-secondary w-16 px-1" @click="clickRegisterStudent">등록</button>
     </div>
   </div>
   <div class="flex w-full justify-between">
@@ -79,8 +79,9 @@
 </template>
 
 <script setup>
-import {ref, onBeforeMount, onUpdated} from "vue";
+import {ref, onBeforeMount} from "vue";
 import {getStudents} from "../api/student.js";
+import router from "../routes/index.js";
 
 const studentsData = ref([]);
 const pagination = ref([]);
@@ -94,10 +95,8 @@ const data = {
   sortDirection: '',
 }
 
-onBeforeMount(async () => {
-  const response = await getStudents();
-  studentsData.value = response.data.studentList;
-  pagination.value = response.data.pagingUtil;
+onBeforeMount( () => {
+  printStudentList();
 });
 
 console.log(studentsData);
@@ -128,7 +127,12 @@ const handleSearch = () => {
 const printStudentList = async () => {
   const response = await getStudents(data);
   studentsData.value = response.data.studentList;
+  pagination.value = response.data.pagingUtil;
 }
+
+const clickRegisterStudent = () => {
+  router.push('/new/student');
+};
 </script>
 
 <style scoped>
