@@ -23,6 +23,13 @@ const routes = [
         },
         component: () => import('./../views/PostAdmin.vue'),
     },
+    {
+        path: '/comment',
+        meta: {
+            hide: true,
+        },
+        component: () => import('./../views/CommentAdmin.vue'),
+    },
 ]
 
 const router = createRouter({
