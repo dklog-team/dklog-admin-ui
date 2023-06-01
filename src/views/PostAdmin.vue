@@ -64,16 +64,17 @@
                 </td>
                 <td>
                     <label :for="i.postId" class="cursor-pointer">{{ i.title }}</label>
-                    <input type="checkbox" :id="i.postId" class="modal-toggle" />
-                    <div class="modal">
+                    <input type="checkbox" :id="i.postId" class="modal-toggle"/>
+                    <div class="modal w-full h-full">
                         <div class="modal-box w-11/12 max-w-5xl h-11/12 max-h-5xl">
-                            <h1 class="text-4xl font-semibold mb-6">{{i.title}}</h1>
+                            <h1 class="text-4xl font-semibold mb-6">{{ i.title }}</h1>
                             <div class="text-gray-500 flex items-center">
                                 <div class="flex items-center w-4/5">
-                                    <span>{{i.createdDate}}</span>
+                                    <span>{{ i.createdDate }}</span>
                                     <span class="ml-1 hidden md:inline-block">작성</span>
                                     <span class="mx-4 hidden md:inline-block">|</span>
-                                    <span v-if="i.modifiedDate" class="hidden md:inline-block"> {{i.modifiedDate}} 수정</span>
+                                    <span v-if="i.modifiedDate"
+                                          class="hidden md:inline-block"> {{ i.modifiedDate }} 수정</span>
                                     <span v-if="i.modifiedDate" class="hidden md:inline-block mx-4">|</span>
                                     <span class="hidden md:inline-block mr-1">조회수</span>
                                     <span class="hidden md:inline-block">{{ i.views }}</span>
@@ -89,11 +90,13 @@
                             <hr class="my-10"/>
                             <!-- content main -->
                             <section class="flex justify-center">
-                                <div class="prose min-w-full prose-pre:bg-[#262626] prose-pre:text-gray-300 prose-a:underline-offset-2 prose-a:decoration-yellow-400 prose-mark:text-yellow-400" v-html="i.contentHtml"></div>
+                                <div class="prose min-w-full prose-pre:bg-[#262626] prose-pre:text-gray-300 prose-a:underline-offset-2 prose-a:decoration-yellow-400 prose-mark:text-yellow-400"
+                                     v-html="i.contentHtml"></div>
                             </section>
                             <div class="flex">
-                                <button class="btn btn-active btn-ghost" @click="deleteOneFunc(i.postId)">삭제</button>
                                 <div class="modal-action">
+                                    <label :for="i.postId" class="btn btn-active btn-ghost"
+                                           @click="deleteOneFunc(i.postId)">삭제</label>
                                     <label :for="i.postId" class="btn">Close!</label>
                                 </div>
                             </div>
@@ -116,19 +119,68 @@
             </tbody>
         </table>
     </div>
+
+<!--페이지 처리 아직 페이지 이동은 안넣음 나중에 @click 이벤트에 axios 넣을 예정-->
+    <div v-if="posts.length>0" class="flex justify-center mt-10">
+        <div>
+            <nav class="isolate inline-flex -space-x-px rounded-md shadow-sm" aria-label="Pagination">
+                <!-- 이전 페이지 존재 -->
+                <a v-if="paging.startPage == paging.pageNumber && !paging.existPrePageGroup"
+                   class="relative inline-flex items-center rounded-l-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 focus:z-20 focus:outline-offset-0">
+                    <span class="sr-only">Previous</span>
+                    <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                        <path fill-rule="evenodd"
+                              d="M12.79 5.23a.75.75 0 01-.02 1.06L8.832 10l3.938 3.71a.75.75 0 11-1.04 1.08l-4.5-4.25a.75.75 0 010-1.08l4.5-4.25a.75.75 0 011.06.02z"
+                              clip-rule="evenodd"/>
+                    </svg>
+                </a>
+                <a v-if="!(paging.startPage == paging.pageNumber && !paging.existPrePageGroup)"
+                   class="relative inline-flex items-center rounded-l-md px-2 py-2 text-gray-700 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0">
+                    <span class="sr-only">Previous</span>
+                    <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                        <path fill-rule="evenodd"
+                              d="M12.79 5.23a.75.75 0 01-.02 1.06L8.832 10l3.938 3.71a.75.75 0 11-1.04 1.08l-4.5-4.25a.75.75 0 010-1.08l4.5-4.25a.75.75 0 011.06.02z"
+                              clip-rule="evenodd"/>
+                    </svg>
+                </a>
+                <!-- 페이지 번호 -->
+                <span v-for="page in pageNumbers">
+                        <a v-if="paging.pageNumber == page" class="relative z-10 inline-flex items-center bg-[#f9d72f] px-4 py-2 text-sm font-semibold text-black focus:z-20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-700">
+                            {{ page }}
+                        </a>
+                        <a v-if="paging.pageNumber != page" @click="" aria-current="page" class="relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0">
+                            {{ page }}
+                        </a>
+                </span>
+                <!-- 다음 페이지 존재 -->
+                <a v-if="paging.endPage == paging.pageNumber && !paging.existNextPageGroup"
+                   class="relative inline-flex items-center rounded-r-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 focus:z-20 focus:outline-offset-0">
+                    <span class="sr-only">Next</span>
+                    <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                        <path fill-rule="evenodd"
+                              d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z"
+                              clip-rule="evenodd"/>
+                    </svg>
+                </a>
+                <a v-if="!(paging.endPage == paging.pageNumber && !paging.existNextPageGroup)"
+                   class="relative inline-flex items-center rounded-r-md px-2 py-2 text-gray-700 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0">
+                    <span class="sr-only">Next</span>
+                    <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                        <path fill-rule="evenodd"
+                              d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z"
+                              clip-rule="evenodd"/>
+                    </svg>
+                </a>
+            </nav>
+        </div>
+    </div>
 </template>
 
 <script setup>
-import {onBeforeMount, onMounted, ref} from "vue";
-import {getList, deleteList, getSortList} from "../api/post.js";
+import {onBeforeMount, ref} from "vue";
+import {deleteList, getList} from "../api/post.js";
 
 let response
-onBeforeMount(async () => {
-    response = await getList()
-    posts.value = response.data.postList
-    console.log(response.data.postList[0].postId)
-})
-
 const posts = ref([]);
 const checkList = ref([]);
 const deleteOne = [];
@@ -137,15 +189,34 @@ const column = ref("postId");
 const sortDirection = ref("");
 const keywordType = ref("title");
 const keyword = ref("");
-const contentHtmlFull = ref("");
+let requestData = ref({
+    column: column,
+    sortDirection: sortDirection,
+    keywordType: keywordType,
+    keyword: keyword
+})
+//페이지 관련 -> 컴포넌트로 빼보기
+const paging = ref([]);
+const pageNumbers = ref([]);
+
+onBeforeMount(async () => {
+    response = await getList(requestData.value)
+    posts.value = response.data.postList
+    paging.value = response.data.pagingUtil
+    console.log(response.data.pagingUtil)
+    for (let i = paging.value.startPage; i <= paging.value.endPage; i++) {
+        pageNumbers.value.push(i)
+    }
+})
 
 const deleteListFunc = async () => {
     const postIds = checkList.value
-    const requestData = {
+    const id = {
         postIds
     }
-    await deleteList(requestData)
-    response = await getList()
+    await deleteList(id)
+    console.log(requestData.value)
+    response = await getList(requestData.value)
     posts.value = response.data.postList
     alert("삭제가 완료되었습니다~")
 }
@@ -153,11 +224,11 @@ const deleteListFunc = async () => {
 const deleteOneFunc = async (postId) => {
     deleteOne[0] = postId
     const postIds = deleteOne
-    const requestData = {
+    const id = {
         postIds
     }
-    await deleteList(requestData)
-    response = await getList()
+    await deleteList(id)
+    response = await getList(requestData.value)
     posts.value = response.data.postList
     alert("삭제가 완료되었습니다~")
 }
@@ -172,17 +243,7 @@ const handleAllCheckBox = () => {
 }
 
 const handleDirection = async () => {
-    let reqColumn = column.value
-    let reqDir = sortDirection.value
-    let reqKeywordType = keywordType.value
-    let reqKeyword = keyword.value
-    const param = {
-        reqColumn,
-        reqDir,
-        reqKeyword,
-        reqKeywordType
-    }
-    response = await getSortList(param)
+    response = await getList(requestData.value)
     posts.value = response.data.postList
 }
 
