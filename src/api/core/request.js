@@ -14,7 +14,6 @@ request.interceptors.request.use(
             config.headers['Authorization'] = cookies.get('token')
             config.headers['adminId'] = cookies.get('adminId')
         }
-        console.log(config.headers)
         return config
     },
     error => {
@@ -34,7 +33,6 @@ request.interceptors.response.use(
     async (error) => {
         alert(error.response.data.message)
         if (error.response.data.message.indexOf('인증') !== -1) {
-            console.log('인증')
             authStore().logout()
         }
         return Promise.reject(error);
