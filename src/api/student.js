@@ -15,5 +15,15 @@ export const registerStudent = (data) => {
             'Content-Type': 'application/json',
         }
     }
-    request.post(uri, data, config);
+    return request.post(uri, data, config);
 }
+
+export const deleteStudent = (data) => {
+    const uri = `/students/resources`
+    const config = {
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }
+    return request.post(uri, data, config);
+};
