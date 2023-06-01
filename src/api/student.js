@@ -18,6 +18,16 @@ export const registerStudent = (data) => {
     return request.post(uri, data, config);
 }
 
+export const updateStudent = (data) => {
+    const uri = `/students/${data.studentId}`;
+    const config = {
+        headers: {
+            'Content-Type': 'application/json',
+        }
+    }
+    return request.put(uri, data, config);
+}
+
 export const deleteStudent = (data) => {
     const uri = `/students/resources`
     const config = {
