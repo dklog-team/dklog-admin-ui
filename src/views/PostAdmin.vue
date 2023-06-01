@@ -19,7 +19,11 @@
                 </select>
                 <input type="text" placeholder="Search…" class="input input-bordered w-96" v-model="keyword"/>
                 <button class="btn btn-square" @click="handleDirection">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                         stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                    </svg>
                 </button>
             </div>
         </div>
@@ -30,7 +34,8 @@
             <thead>
             <tr>
                 <th>
-                    <input type="checkbox" class="checkbox" id="checkbox" @change="handleAllCheckBox" v-model="checkBoolean"/>
+                    <input type="checkbox" class="checkbox" id="checkbox" @change="handleAllCheckBox"
+                           v-model="checkBoolean"/>
                 </th>
                 <th>이름</th>
                 <th>게시글</th>
@@ -39,7 +44,7 @@
             </tr>
             </thead>
             <tbody>
-            <tr v-for="i in posts">
+            <tr v-for="(i,index) in posts">
                 <th>
                     <input type="checkbox" class="checkbox" v-model="checkList" :value="i.postId"/>
                 </th>
@@ -52,43 +57,71 @@
                         </div>
                         <div>
                             <div class="font-bold">{{ i.username }}</div>
-                            <div class="text-sm opacity-50">게시일 {{i.createdDate}}</div>
-                            <div class="text-sm opacity-50" v-if="i.modifiedDate">수정일 {{i.createdDate}}</div>
+                            <div class="text-sm opacity-50">게시일 {{ i.createdDate }}</div>
+                            <div class="text-sm opacity-50" v-if="i.modifiedDate">수정일 {{ i.createdDate }}</div>
                         </div>
                     </div>
                 </td>
                 <td>
-                    <a href="#detail" :href="keyword">{{i.title}}</a>
+                    <label :for="i.postId" class="cursor-pointer">{{ i.title }}</label>
+                    <input type="checkbox" :id="i.postId" class="modal-toggle" />
+                    <div class="modal">
+                        <div class="modal-box w-11/12 max-w-5xl h-11/12 max-h-5xl">
+                            <h1 class="text-4xl font-semibold mb-6">{{i.title}}</h1>
+                            <div class="text-gray-500 flex items-center">
+                                <div class="flex items-center w-4/5">
+                                    <span>{{i.createdDate}}</span>
+                                    <span class="ml-1 hidden md:inline-block">작성</span>
+                                    <span class="mx-4 hidden md:inline-block">|</span>
+                                    <span v-if="i.modifiedDate" class="hidden md:inline-block"> {{i.modifiedDate}} 수정</span>
+                                    <span v-if="i.modifiedDate" class="hidden md:inline-block mx-4">|</span>
+                                    <span class="hidden md:inline-block mr-1">조회수</span>
+                                    <span class="hidden md:inline-block">{{ i.views }}</span>
+                                    <span class="mx-4">|</span>
+                                    <div class="avatar mr-2">
+                                        <div class="w-6 rounded-full ring-2 ring-gray-300">
+                                            <img :src="i.picture">
+                                        </div>
+                                    </div>
+                                    <span>{{ i.username }}</span>
+                                </div>
+                            </div>
+                            <hr class="my-10"/>
+                            <!-- content main -->
+                            <section class="flex justify-center">
+                                <div class="prose min-w-full prose-pre:bg-[#262626] prose-pre:text-gray-300 prose-a:underline-offset-2 prose-a:decoration-yellow-400 prose-mark:text-yellow-400" v-html="i.contentHtml"></div>
+                            </section>
+                            <div class="flex">
+                                <button class="btn btn-active btn-ghost" @click="deleteOneFunc(i.postId)">삭제</button>
+                                <div class="modal-action">
+                                    <label :for="i.postId" class="btn">Close!</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <div class="flex">
-                        <div class="text-sm opacity-50 overflow-hidden w-96">{{i.previewContent}}</div>
+                        <div class="text-sm opacity-50 overflow-hidden w-96">{{ i.previewContent }}</div>
                         <span v-if="i.previewContent" class="text-sm opacity-50">...</span>
                     </div>
                 </td>
                 <td>{{ i.views }}</td>
                 <th>
-                    <button class="btn btn-ghost btn-xs" @click="deleteOneFunc(i.postId)">삭제</button>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                         stroke="currentColor" class="w-6 h-6 cursor-pointer" @click="deleteOneFunc(i.postId)">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                              d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"/>
+                    </svg>
                 </th>
             </tr>
             </tbody>
         </table>
     </div>
-<!--    <a href="#my-modal-2" class="btn">open modal</a>-->
-    <!-- Put this part before </body> tag -->
-    <div class="modal" id="detail">
-        <div class="modal-box">
-            <h3 class="font-bold text-lg">{{column}}</h3>
-            <p class="py-4">You've been selected for a chance to get one year of subscription to use Wikipedia for free!</p>
-            <div class="modal-action">
-                <a href="#" class="btn">Yay!</a>
-            </div>
-        </div>
-    </div>
 </template>
 
-
 <script setup>
-import {onBeforeMount, ref} from "vue";
+import {onBeforeMount, onMounted, ref} from "vue";
 import {getList, deleteList, getSortList} from "../api/post.js";
+
 let response
 onBeforeMount(async () => {
     response = await getList()
@@ -104,6 +137,8 @@ const column = ref("postId");
 const sortDirection = ref("");
 const keywordType = ref("title");
 const keyword = ref("");
+const contentHtmlFull = ref("");
+
 const deleteListFunc = async () => {
     const postIds = checkList.value
     const requestData = {
@@ -127,14 +162,12 @@ const deleteOneFunc = async (postId) => {
     alert("삭제가 완료되었습니다~")
 }
 
-const handleAllCheckBox = () =>{
+const handleAllCheckBox = () => {
     checkList.value = []
-    if(checkBoolean.value){
-        for(let i of posts.value){
+    if (checkBoolean.value) {
+        for (let i of posts.value) {
             checkList.value.push(i.postId)
         }
-    }else{
-        checkList.value = []
     }
 }
 
@@ -145,15 +178,14 @@ const handleDirection = async () => {
     let reqKeyword = keyword.value
     const param = {
         reqColumn,
-        reqDir
-    }
-    const keywordParam = {
+        reqDir,
         reqKeyword,
         reqKeywordType
-    };
-    response = await getSortList(param, keywordParam)
+    }
+    response = await getSortList(param)
     posts.value = response.data.postList
 }
+
 </script>
 
 <style scoped>
