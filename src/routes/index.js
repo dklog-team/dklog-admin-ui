@@ -31,6 +31,13 @@ const routes = [
         component: () => import('./../views/StudentAdmin.vue'),
     },
     {
+        path: '/new/student',
+        meta: {
+            hide: true,
+        },
+        component: () => import('./../views/RegisterStudent.vue'),
+    },
+    {
         path: '/comment',
         meta: {
             hide: true,
