@@ -51,11 +51,11 @@ const register = () => {
     return
   }
   registerStudent(data.value)
-  router.push(`/student`);
+  router.replace(`/student`);
 }
 
 const cancel = () => {
-  router.push(`/student`);
+  router.replace(`/student`);
 };
 
 </script>

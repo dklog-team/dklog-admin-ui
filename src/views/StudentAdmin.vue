@@ -95,16 +95,19 @@
       </tbody>
     </table>
   </div>
+  <Pagination v-if="load" :pagingUtil="pagination" @changePage="changePage"></Pagination>
 </template>
 
 <script setup>
-import {ref, onBeforeMount} from "vue";
+import {ref, onMounted} from "vue";
 import {deleteStudent, getStudents, updateStudent} from "../api/student.js";
 import router from "../routes/index.js";
 import UpdateModal from "../components/student/updateModal.vue";
+import Pagination from "../components/common/Pagination.vue";
+import {getList} from "../api/post.js";
 
 const studentsData = ref([]);
-const pagination = ref([]);
+const pagination = ref({});
 const selectedSort = ref({
   sort: 'desc',
   column: 'studentId'
@@ -125,13 +128,21 @@ const data = {
   semester: '',
   column: '',
   sortDirection: '',
+  page: 1
+}
+const load = ref(false);
+
+const printStudentList = async () => {
+  const response = await getStudents(data);
+  studentsData.value = response.data.studentList;
+  pagination.value = response.data.pagingUtil;
+  load.value = true;
 }
 
-onBeforeMount( async () => {
-    await printStudentList();
-});
-
-console.log(studentsData);
+onMounted(()=>{
+  console.log('mounted!')
+  printStudentList();
+})
 
 const handleSemesterSelect = () => {
   if (selectedSemester.value !== '') {
@@ -222,14 +233,13 @@ const clear = () => {
   printStudentList();
 };
 
-const printStudentList = async () => {
-  const response = await getStudents(data);
-  studentsData.value = response.data.studentList;
-  pagination.value = response.data.pagingUtil;
+const changePage = async (page) => {
+  data.page = page
+  await printStudentList();
 }
 
 const clickRegisterStudent = () => {
-  router.push('/new/student');
+  router.replace('/new/student');
 };
 </script>
 
