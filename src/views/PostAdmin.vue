@@ -1,23 +1,23 @@
 <template>
     <div class="flex">
         <label for="selectColumn">컬럼:</label>
-        <select class="select w-full max-w-xs" id="selectColumn" v-model="column" @change="handleDirection">
+        <select class="select w-full max-w-xs" id="selectColumn" v-model="requestData.column" @change="handleDirection">
             <option value="postId">기본</option>
             <option value="title">제목</option>
             <option value="views">조회수</option>
         </select>
         <label for="selectDir">방식:</label>
-        <select class="select w-full max-w-xs" id="selectDir" v-model="sortDirection" @change="handleDirection">
+        <select class="select w-full max-w-xs" id="selectDir" v-model="requestData.sortDirection" @change="handleDirection">
             <option value="">내림차순</option>
             <option value="asc">오름차순</option>
         </select>
         <div class="form-control">
             <div class="input-group">
-                <select class="select" v-model="keywordType">
+                <select class="select" v-model="requestData.keywordType">
                     <option value="title">제목</option>
                     <option value="contentText">내용</option>
                 </select>
-                <input type="text" placeholder="Search…" class="input input-bordered w-96" v-model="keyword"/>
+                <input type="text" placeholder="Search…" class="input input-bordered w-96" v-model="requestData.keyword"/>
                 <button class="btn btn-square" @click="handleDirection">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
                          stroke="currentColor">
@@ -119,95 +119,37 @@
             </tbody>
         </table>
     </div>
-
-<!--페이지 처리 아직 페이지 이동은 안넣음 나중에 @click 이벤트에 axios 넣을 예정-->
-    <div v-if="posts.length>0" class="flex justify-center mt-10">
-        <div>
-            <nav class="isolate inline-flex -space-x-px rounded-md shadow-sm" aria-label="Pagination">
-                <!-- 이전 페이지 존재 -->
-                <a v-if="paging.startPage == paging.pageNumber && !paging.existPrePageGroup"
-                   class="relative inline-flex items-center rounded-l-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 focus:z-20 focus:outline-offset-0">
-                    <span class="sr-only">Previous</span>
-                    <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                        <path fill-rule="evenodd"
-                              d="M12.79 5.23a.75.75 0 01-.02 1.06L8.832 10l3.938 3.71a.75.75 0 11-1.04 1.08l-4.5-4.25a.75.75 0 010-1.08l4.5-4.25a.75.75 0 011.06.02z"
-                              clip-rule="evenodd"/>
-                    </svg>
-                </a>
-                <a v-if="!(paging.startPage == paging.pageNumber && !paging.existPrePageGroup)"
-                   class="relative inline-flex items-center rounded-l-md px-2 py-2 text-gray-700 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0">
-                    <span class="sr-only">Previous</span>
-                    <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                        <path fill-rule="evenodd"
-                              d="M12.79 5.23a.75.75 0 01-.02 1.06L8.832 10l3.938 3.71a.75.75 0 11-1.04 1.08l-4.5-4.25a.75.75 0 010-1.08l4.5-4.25a.75.75 0 011.06.02z"
-                              clip-rule="evenodd"/>
-                    </svg>
-                </a>
-                <!-- 페이지 번호 -->
-                <span v-for="page in pageNumbers">
-                        <a v-if="paging.pageNumber == page" class="relative z-10 inline-flex items-center bg-[#f9d72f] px-4 py-2 text-sm font-semibold text-black focus:z-20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-700">
-                            {{ page }}
-                        </a>
-                        <a v-if="paging.pageNumber != page" @click="" aria-current="page" class="relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0">
-                            {{ page }}
-                        </a>
-                </span>
-                <!-- 다음 페이지 존재 -->
-                <a v-if="paging.endPage == paging.pageNumber && !paging.existNextPageGroup"
-                   class="relative inline-flex items-center rounded-r-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 focus:z-20 focus:outline-offset-0">
-                    <span class="sr-only">Next</span>
-                    <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                        <path fill-rule="evenodd"
-                              d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z"
-                              clip-rule="evenodd"/>
-                    </svg>
-                </a>
-                <a v-if="!(paging.endPage == paging.pageNumber && !paging.existNextPageGroup)"
-                   class="relative inline-flex items-center rounded-r-md px-2 py-2 text-gray-700 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0">
-                    <span class="sr-only">Next</span>
-                    <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                        <path fill-rule="evenodd"
-                              d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z"
-                              clip-rule="evenodd"/>
-                    </svg>
-                </a>
-            </nav>
-        </div>
-    </div>
+    <Pagination v-if="load" :pagingUtil="paging" @changePage="changePage"></Pagination>
 </template>
 
 <script setup>
-import {onBeforeMount, ref} from "vue";
+import {ref} from "vue";
 import {deleteList, getList} from "../api/post.js";
+import Pagination from "../components/common/Pagination.vue";
 
 let response
 const posts = ref([]);
 const checkList = ref([]);
-const deleteOne = [];
 const checkBoolean = ref();
-const column = ref("postId");
-const sortDirection = ref("");
-const keywordType = ref("title");
-const keyword = ref("");
 let requestData = ref({
-    column: column,
-    sortDirection: sortDirection,
-    keywordType: keywordType,
-    keyword: keyword
+    column: "postId",
+    sortDirection: "",
+    keywordType: "title",
+    keyword: "",
+    page: 1
 })
 //페이지 관련 -> 컴포넌트로 빼보기
-const paging = ref([]);
-const pageNumbers = ref([]);
+const paging = ref({});
+const load = ref(false)
 
-onBeforeMount(async () => {
+const init = async () => {
     response = await getList(requestData.value)
     posts.value = response.data.postList
     paging.value = response.data.pagingUtil
     console.log(response.data.pagingUtil)
-    for (let i = paging.value.startPage; i <= paging.value.endPage; i++) {
-        pageNumbers.value.push(i)
-    }
-})
+    load.value = true
+}
+init()
 
 const deleteListFunc = async () => {
     const postIds = checkList.value
@@ -222,6 +164,7 @@ const deleteListFunc = async () => {
 }
 
 const deleteOneFunc = async (postId) => {
+    const deleteOne = []
     deleteOne[0] = postId
     const postIds = deleteOne
     const id = {
@@ -247,6 +190,13 @@ const handleDirection = async () => {
     posts.value = response.data.postList
 }
 
+const changePage = async (page) => {
+    console.log("changePage: " +page)
+    requestData.value.page = page
+    response = await getList(requestData.value)
+    posts.value = response.data.postList
+    paging.value = response.data.pagingUtil
+}
 </script>
 
 <style scoped>
