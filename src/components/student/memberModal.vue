@@ -58,10 +58,6 @@ const props = defineProps({
     type: Object,
     required: true
   },
-  studentName: {
-    type: String,
-    required: true
-  }
 });
 const emit = defineEmits(['close-modal'])
 

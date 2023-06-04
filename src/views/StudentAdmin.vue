@@ -70,7 +70,7 @@
         <td>{{ item.studentId }}</td>
         <td>
           <p v-if="item.authStatus === 'N'">{{ item.name }}</p>
-          <a v-if="item.authStatus === 'Y'" @click="clickStudentName(item.studentId)" class="hover:btn-link">
+          <a v-if="item.authStatus === 'Y'" @click="clickStudentName(item.studentId, index)" class="hover:btn-link">
             {{ item.name }}
           </a>
           <member-modal :show-modal="isShowMemberModal" :member-info="memberData" @close-modal="closeMemberModal"></member-modal>
@@ -139,7 +139,14 @@ const data = {
 }
 const load = ref(false);
 const isShowMemberModal = ref(false);
-const memberData = ref({});
+const memberData = ref({
+  memberId: '',
+  username: '',
+  email: '',
+  role: '',
+  picture: '',
+  githubUsername: ''
+});
 
 const printStudentList = async () => {
   const response = await getStudents(data);
@@ -264,7 +271,15 @@ const clickStudentName = async (studentId) => {
 
 const closeMemberModal = () => {
   isShowMemberModal.value = false;
-  memberData.value = '';
+  memberData.value = {
+    memberId: '',
+    username: '',
+    email: '',
+    role: '',
+    picture: '',
+    githubUsername: ''
+  }
+  printStudentList();
 }
 </script>
 
