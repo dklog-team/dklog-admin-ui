@@ -1,7 +1,6 @@
 <template>
-  <dialog class="modal modal-open rounded-3xl bg-transparent" v-if="showModal">
     <div class="modal-box w-full shadow-lg">
-      <h2 class="mt-5 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">dklog 회원 정보</h2>
+      <h1 class="text-xl font-bold w-full mb-4 text-start">dklog 회원 정보</h1>
       <div class="w-full mt-5 flex bg-gray-50 p-8 shadow-inner">
         <div class="avatar flex flex-col text-center">
           <div class="w-36 rounded-full">
@@ -38,11 +37,10 @@
         </div>
       </div>
       <div class="modal-action">
-        <button class="btn btn-sm btn-primary bg-opacity-60 border-opacity-60" @click="handleDelete">삭제</button>
-        <button class="btn btn-sm btn-secondary" @click="handleClose">확인</button>
+        <a href="#" class="btn btn-sm btn-ghost bg-gray-100 hover:bg-gray-200" @click="handleDelete">삭제</a>
+        <a href="#" class="btn btn-sm btn-secondary" @click="handleClose">확인</a>
       </div>
     </div>
-  </dialog>
 </template>
 
 <script setup>

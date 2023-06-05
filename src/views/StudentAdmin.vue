@@ -1,35 +1,26 @@
 <template>
-  <div class="flex w-84 justify-between mx-auto my-1">
+  <div class="px-16 mt-16 flex justify-between">
     <div>
-      <h2 class="text-2xl font-bold tracking-tight text-gray-900">학생 관리 페이지</h2>
-      <p class="mt-2 text-sm leading-8 text-gray-600">dktechin 교육생 명단 관리</p>
+      <h1 class="text-2xl font-bold tracking-tight text-gray-900">학생 관리 페이지</h1>
     </div>
     <div class="flex justify-end">
-      <button class="btn btn-ghost w-16 px-1" v-show="checkIdList.length !== 0" @click="handleDeleteList">삭제</button>
+      <button class="btn btn-ghost w-16 px-1 bg-gray-100 hover:bg-gray-200 mr-4" v-show="checkIdList.length !== 0"
+              @click="handleDeleteList">삭제
+      </button>
       <button class="btn btn-secondary w-16 px-1" @click="clickRegisterStudent">등록</button>
     </div>
   </div>
-  <div class="flex w-full justify-between">
-    <div class="flex w-full">
-      <div class="flex w-full h-auto justify-items-center">
-        <label for="selectSort" class="label-text">정렬 방식:</label>
-        <select id="selectSort" class="select w-full max-w-xs" v-model="selectedSort" @change="handleSort">
-          <option :value="{ 'sort' : 'desc', 'column': 'studentId'}">최신순</option>
-          <option :value="{ 'sort': 'asc', 'column': 'studentId'}">등록순</option>
-          <hr>
-          <option :value="{ 'sort': 'asc', 'column': 'name'}">A-Z</option>
-          <option :value="{ 'sort': 'desc', 'column': 'name'}">Z-A</option>
-        </select>
-      </div>
-      <div class="flex w-full h-auto justify-items-center">
-        <label for="selectSemester" class="label-text">기수:</label>
-        <select id="selectSemester" v-model="selectedSemester" @change="handleSemesterSelect"
-                class="select w-full max-w-xs">
-          <option value="">All</option>
-          <option v-for="number in 10" :value="number">{{ number }}</option>
-        </select>
-      </div>
-      <div class="input-group">
+  <div class="px-16 mt-6 flex justify-between">
+    <div class="flex items-center w-3/12">
+      <select id="selectSemester" v-model="selectedSemester" @change="handleSemesterSelect"
+              class="select select-bordered w-6/12 max-w-xs">
+        <option value="" disabled>기수</option>
+        <option value="">전체</option>
+        <option v-for="number in 10" :value="number">{{ number }}</option>
+      </select>
+    </div>
+    <div class="flex">
+      <div class="input-group w-fit border-2 rounded-xl mr-4">
         <input type="text" placeholder="학생 이름으로 검색" class="input focus:outline-none" v-model="data.name"
                @keyup.enter="printStudentList"/>
         <button class="btn btn-circle btn-ghost" @click="printStudentList">
@@ -39,25 +30,70 @@
                   d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
           </svg>
         </button>
-        <button class="btn btn-ghost" @click="clear">초기화</button>
       </div>
+      <button class="btn btn-ghost bg-gray-100 hover:bg-gray-200" @click="clear">초기화</button>
     </div>
   </div>
-  <div class="overflow-x-auto">
+  <div class="px-16 mt-6 overflow-x-auto">
     <table class="table w-full">
       <thead>
-      <tr>
-        <th>
+      <tr class="border-b-2">
+        <th class="bg-base-100">
           <label>
             <input type="checkbox" class="checkbox" v-model="selectedAll" @change="handleAllCheck"/>
           </label>
         </th>
-        <th>등록 번호</th>
-        <th>이름</th>
-        <th>전화 번호</th>
-        <th>기수</th>
-        <th>가입 현황</th>
-        <th>actions</th>
+        <th class="bg-base-100 w-10">
+          <button v-if="selectedSort.column !== 'studentId'" @click="handleSort('studentId')" class="flex">등록 번호
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5 opacity-0">
+              <path fill-rule="evenodd"
+                    d="M10 15a.75.75 0 01-.75-.75V7.612L7.29 9.77a.75.75 0 01-1.08-1.04l3.25-3.5a.75.75 0 011.08 0l3.25 3.5a.75.75 0 11-1.08 1.04l-1.96-2.158v6.638A.75.75 0 0110 15z"
+                    clip-rule="evenodd"/>
+            </svg>
+          </button>
+          <button v-if="selectedSort.column === 'studentId'" class="text-primary flex" @click="handleSort('studentId')">
+            등록 번호
+            <svg v-if="selectedSort.sort === 'asc'" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
+                 fill="currentColor" class="w-5 h-5">
+              <path fill-rule="evenodd"
+                    d="M10 15a.75.75 0 01-.75-.75V7.612L7.29 9.77a.75.75 0 01-1.08-1.04l3.25-3.5a.75.75 0 011.08 0l3.25 3.5a.75.75 0 11-1.08 1.04l-1.96-2.158v6.638A.75.75 0 0110 15z"
+                    clip-rule="evenodd"/>
+            </svg>
+            <svg v-if="selectedSort.sort === 'desc'" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
+                 fill="currentColor" class="w-5 h-5">
+              <path fill-rule="evenodd"
+                    d="M10 5a.75.75 0 01.75.75v6.638l1.96-2.158a.75.75 0 111.08 1.04l-3.25 3.5a.75.75 0 01-1.08 0l-3.25-3.5a.75.75 0 111.08-1.04l1.96 2.158V5.75A.75.75 0 0110 5z"
+                    clip-rule="evenodd"/>
+            </svg>
+          </button>
+        </th>
+        <th class="bg-base-100">
+          <button v-if="selectedSort.column !== 'name'" @click="handleSort('name')" class="flex">이름
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5 opacity-0">
+              <path fill-rule="evenodd"
+                    d="M10 15a.75.75 0 01-.75-.75V7.612L7.29 9.77a.75.75 0 01-1.08-1.04l3.25-3.5a.75.75 0 011.08 0l3.25 3.5a.75.75 0 11-1.08 1.04l-1.96-2.158v6.638A.75.75 0 0110 15z"
+                    clip-rule="evenodd"/>
+            </svg>
+          </button>
+          <button v-if="selectedSort.column === 'name'" class="text-primary flex" @click="handleSort('name')">이름
+            <svg v-if="selectedSort.sort === 'asc'" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
+                 fill="currentColor" class="w-5 h-5">
+              <path fill-rule="evenodd"
+                    d="M10 15a.75.75 0 01-.75-.75V7.612L7.29 9.77a.75.75 0 01-1.08-1.04l3.25-3.5a.75.75 0 011.08 0l3.25 3.5a.75.75 0 11-1.08 1.04l-1.96-2.158v6.638A.75.75 0 0110 15z"
+                    clip-rule="evenodd"/>
+            </svg>
+            <svg v-if="selectedSort.sort === 'desc'" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
+                 fill="currentColor" class="w-5 h-5">
+              <path fill-rule="evenodd"
+                    d="M10 5a.75.75 0 01.75.75v6.638l1.96-2.158a.75.75 0 111.08 1.04l-3.25 3.5a.75.75 0 01-1.08 0l-3.25-3.5a.75.75 0 111.08-1.04l1.96 2.158V5.75A.75.75 0 0110 5z"
+                    clip-rule="evenodd"/>
+            </svg>
+          </button>
+        </th>
+        <th class="bg-base-100">전화 번호</th>
+        <th class="bg-base-100">기수</th>
+        <th class="bg-base-100">가입 현황</th>
+        <th class="bg-base-100">관리</th>
       </tr>
       </thead>
       <tbody>
@@ -70,24 +106,41 @@
         <td>{{ item.studentId }}</td>
         <td>
           <p v-if="item.authStatus === 'N'">{{ item.name }}</p>
-          <a v-if="item.authStatus === 'Y'" @click="clickStudentName(item.studentId, index)" class="hover:btn-link">
+          <a href="#member-modal" v-if="item.authStatus === 'Y'" @click="clickStudentName(item.studentId, index)" class="hover:btn-link">
             {{ item.name }}
           </a>
-          <member-modal :show-modal="isShowMemberModal" :member-info="memberData" @close-modal="closeMemberModal"></member-modal>
+          <div class="modal" id="member-modal">
+            <member-modal :show-modal="isShowMemberModal" :member-info="memberData"
+                          @close-modal="closeMemberModal"></member-modal>
+          </div>
         </td>
         <td>{{ item.phoneNumber }}</td>
         <td>{{ item.semester }}</td>
-        <td>{{ item.authStatus }}</td>
         <td>
-          <button id="editStudentBtn" class="btn btn-circle btn-ghost" @click="openModal(index)">
+          <div v-if="item.authStatus === 'Y'" class="flex items-center">
+            <span class="relative flex h-3 w-3">
+              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+              <span class="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
+            </span>
+            <p class="ml-2">인증 완료</p>
+          </div>
+          <div v-if="item.authStatus === 'N'" class="flex items-center">
+            <span class="relative inline-flex rounded-full h-3 w-3 bg-red-500"/>
+            <p class="ml-2">미인증</p>
+          </div>
+        </td>
+        <td>
+          <a href="#update-modal" id="editStudentBtn" class="btn btn-circle btn-ghost" @click="openModal(index)">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                  stroke="currentColor" class="w-6 h-6">
               <path stroke-linecap="round" stroke-linejoin="round"
                     d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10"/>
             </svg>
-          </button>
-          <update-modal :student-info="studentInfo" :show-modal="showUpdateModal" @handle-update=handleUpdate
-                        @close-modal="closeModal"></update-modal>
+          </a>
+          <div class="modal" id="update-modal">
+            <update-modal :student-info="studentInfo" :show-modal="showUpdateModal" @handle-update=handleUpdate
+                          @close-modal="closeModal"></update-modal>
+          </div>
           <button id="deleteOneStudentBtn" class="btn btn-circle btn-ghost"
                   @click="handleDeleteOne(item.studentId, item.name)">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -101,7 +154,7 @@
       </tbody>
     </table>
   </div>
-  <Pagination v-if="load" :pagingUtil="pagination" @changePage="changePage"></Pagination>
+  <Pagination v-if="load && studentsData.length !== 0" :pagingUtil="pagination" @changePage="changePage" class="mb-6"></Pagination>
 </template>
 
 <script setup>
@@ -155,7 +208,7 @@ const printStudentList = async () => {
   load.value = true;
 }
 
-onMounted(()=>{
+onMounted(() => {
   console.log('mounted!')
   printStudentList();
 })
@@ -170,9 +223,19 @@ const handleSemesterSelect = () => {
   printStudentList();
 };
 
-const handleSort = () => {
+const handleSort = (column) => {
+  if (selectedSort.value.column === column) {
+    if (selectedSort.value.sort === 'desc') {
+      selectedSort.value.sort = 'asc';
+    } else {
+      selectedSort.value.sort = 'desc';
+    }
+  } else {
+    selectedSort.value.column = column;
+    selectedSort.value.sort = 'desc';
+  }
+  data.column = column;
   data.sortDirection = selectedSort.value.sort;
-  data.column = selectedSort.value.column;
 
   printStudentList();
 }
@@ -263,7 +326,7 @@ const clickStudentName = async (studentId) => {
   isShowMemberModal.value = true;
   const response = await getMember(studentId);
   memberData.value = response.data
-  if(memberData.value.email === null){
+  if (memberData.value.email === null) {
     memberData.value.email = '이메일 정보 없음';
   }
 
