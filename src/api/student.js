@@ -37,3 +37,13 @@ export const deleteStudent = (data) => {
     }
     return request.post(uri, data, config);
 };
+
+export const getStudentAuthData = () => {
+    const uri = `/students/auth/data`
+    const config = {
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    }
+    return request.get(uri, config)
+}
