@@ -10,3 +10,13 @@ export const getStudents = (data) => {
     }
     return request.get(uri, config)
 }
+
+export const getStudentAuthData = () => {
+    const uri = `/students/auth/data`
+    const config = {
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    }
+    return request.get(uri, config)
+}

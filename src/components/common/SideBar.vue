@@ -1,5 +1,5 @@
 <template>
-  <div class="flex h-screen w-96 flex-col justify-between border-e bg-gray-100">
+  <div class="flex w-96 flex-col justify-between border-e bg-gray-100">
     <div>
       <!-- logo -->
       <div class="flex p-4">

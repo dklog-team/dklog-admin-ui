@@ -19,3 +19,23 @@ export const deleteList = (requestData) => {
     }
     return request.post(uri, requestData, config)
 }
+
+export const getPopularPostList = () => {
+    const uri = `/posts/popular`
+    const config = {
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    }
+    return request.get(uri, config)
+}
+
+export const getRecentPostList = () => {
+    const uri = `/posts/recent`
+    const config = {
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    }
+    return request.get(uri, config)
+}

@@ -1,7 +1,7 @@
 <template>
   <Line
       id="my-chart-id"
-      class="h-80"
+      class="h-72"
       v-if="loaded"
       :options="chartOptions"
       :data="chartData"
@@ -68,7 +68,7 @@ const init = async () => {
     }
   }
   chartStyle.value = {
-    height: '30vh',
+    // height: '30vh',
   }
   loaded.value = true
 }
