@@ -68,7 +68,13 @@
           </label>
         </th>
         <td>{{ item.studentId }}</td>
-        <td>{{ item.name }}</td>
+        <td>
+          <p v-if="item.authStatus === 'N'">{{ item.name }}</p>
+          <a v-if="item.authStatus === 'Y'" @click="clickStudentName(item.studentId, index)" class="hover:btn-link">
+            {{ item.name }}
+          </a>
+          <member-modal :show-modal="isShowMemberModal" :member-info="memberData" @close-modal="closeMemberModal"></member-modal>
+        </td>
         <td>{{ item.phoneNumber }}</td>
         <td>{{ item.semester }}</td>
         <td>{{ item.authStatus }}</td>
@@ -80,7 +86,7 @@
                     d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10"/>
             </svg>
           </button>
-          <update-modal :student-info="studentInfo" :show-modal="showModal" @handle-update=handleUpdate
+          <update-modal :student-info="studentInfo" :show-modal="showUpdateModal" @handle-update=handleUpdate
                         @close-modal="closeModal"></update-modal>
           <button id="deleteOneStudentBtn" class="btn btn-circle btn-ghost"
                   @click="handleDeleteOne(item.studentId, item.name)">
@@ -104,7 +110,8 @@ import {deleteStudent, getStudents, updateStudent} from "../api/student.js";
 import router from "../routes/index.js";
 import UpdateModal from "../components/student/updateModal.vue";
 import Pagination from "../components/common/Pagination.vue";
-import {getList} from "../api/post.js";
+import MemberModal from "../components/student/memberModal.vue";
+import {getMember} from "../api/member.js";
 
 const studentsData = ref([]);
 const pagination = ref({});
@@ -122,7 +129,7 @@ const studentInfo = ref({
 })
 const selectedAll = ref(false);
 const checkIdList = ref([]);
-const showModal = ref(false);
+const showUpdateModal = ref(false);
 const data = {
   name: '',
   semester: '',
@@ -131,6 +138,15 @@ const data = {
   page: 1
 }
 const load = ref(false);
+const isShowMemberModal = ref(false);
+const memberData = ref({
+  memberId: '',
+  username: '',
+  email: '',
+  role: '',
+  picture: '',
+  githubUsername: ''
+});
 
 const printStudentList = async () => {
   const response = await getStudents(data);
@@ -167,7 +183,7 @@ const openModal = (index) => {
   studentInfo.value.phoneNumber = studentsData.value[index].phoneNumber
   studentInfo.value.semester = studentsData.value[index].semester
   studentInfo.value.authStatus = studentsData.value[index].authStatus
-  showModal.value = true;
+  showUpdateModal.value = true;
 }
 
 const handleUpdate = async () => {
@@ -180,7 +196,7 @@ const handleUpdate = async () => {
 }
 
 const closeModal = () => {
-  showModal.value = false;
+  showUpdateModal.value = false;
 }
 
 const handleAllCheck = () => {
@@ -241,6 +257,30 @@ const changePage = async (page) => {
 const clickRegisterStudent = () => {
   router.replace('/new/student');
 };
+
+// memberModal 관련
+const clickStudentName = async (studentId) => {
+  isShowMemberModal.value = true;
+  const response = await getMember(studentId);
+  memberData.value = response.data
+  if(memberData.value.email === null){
+    memberData.value.email = '이메일 정보 없음';
+  }
+
+}
+
+const closeMemberModal = () => {
+  isShowMemberModal.value = false;
+  memberData.value = {
+    memberId: '',
+    username: '',
+    email: '',
+    role: '',
+    picture: '',
+    githubUsername: ''
+  }
+  printStudentList();
+}
 </script>
 
 <style scoped>
