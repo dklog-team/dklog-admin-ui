@@ -44,6 +44,13 @@ const routes = [
         },
         component: () => import('./../views/CommentAdmin.vue'),
     },
+    {
+        path: '/image',
+        meta: {
+            hide: true,
+        },
+        component: () => import('./../views/ImageAdmin.vue'),
+    },
 ]
 
 const router = createRouter({
