@@ -8,10 +8,14 @@
     <select class="select w-20 max-w-xs" v-model="selectedSortDirection" @change="handleSortChange">
       <option :value="{'sort':'desc','column':'createdDate'}">최신순</option>
       <option :value="{'sort':'asc','column':'createdDate'}">오래된 순</option>
+      <hr>
+      <option :value="{ 'sort': 'asc', 'column': 'member.student.name'}">asc</option>
+      <option :value="{ 'sort': 'desc', 'column': 'member.student.name'}">desc</option>
     </select>
 
     <label for="selectedSemester"> 기수 : </label>
     <select class="select w-20 max-w-xs" v-model="selectedSemester" @change="handleSemester">
+      <option value=" ">all</option>
       <option v-for="number in 3" :value="number">{{ number }}기</option>
     </select>
 
@@ -20,7 +24,16 @@
       <option value="content">댓글 내용</option>
     </select>
     <input type="text" placeholder="검색" v-model="searchText" class="input w-full max-w-xs"/>
-    <button class="btn btn-circle btn-ghost" @click="handleSearch">검색</button>
+    <button @click="handleSearch">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+    </svg>
+    </button>
+    <button @click="clear">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
+    </svg>
+    </button>
   </div>
 
   <div>
@@ -30,7 +43,7 @@
         <tr>
           <th>
             <label>
-              <input type="checkbox" class="checkbox" @click="selectAllCheck"/>
+              <input type="checkbox" class="checkbox" v-model="selectAllCheckbox" @change="selectAllCheck"/>
             </label>
           </th>
           <th>이름</th>
@@ -96,6 +109,7 @@
         </tfoot>
 
       </table>
+      <Pagination v-if="load && comments.length > 0" :pagingUtil="paging" @changePage="changePage"></Pagination>
     </div>
   </div>
 </template>
@@ -103,12 +117,17 @@
 <script setup>
 import {onBeforeMount, ref} from "vue";
 import {deleteCommentList, getCommentList} from "../api/comment.js"
+import Pagination from "../components/common/Pagination.vue";
 
 const comments = ref('');
 const selectedColumn = ref('');
 const selectedSemester = ref('');
-const selectedSortDirection = ref('');
+const selectedSortDirection = ref({
+  sort: 'desc',
+  column: 'createdData',
+});
 const commentCheckList = ref([]);
+const selectAllCheckbox = ref(false);
 const searchText = ref('');
 
 const data = {
@@ -117,21 +136,27 @@ const data = {
   name: '',
   semester: '',
   content: '',
+  page: 1,
 };
+
+const paging = ref({});
+const load = ref(false)
+
 let response;
 
 onBeforeMount(async () => {
   response = await getCommentList({});
   comments.value = response.data.commentList;
+  paging.value = response.data.pagingUtil
+  load.value = true
 });
 
-const selectAllCheck = async () => {
-  const selectAllCheckbox = commentCheckList.value.length === comments.value.length;
-
-  if (selectAllCheckbox) {
-    commentCheckList.value = [];
+const selectAllCheck = () => {
+  if (selectAllCheckbox.value) {
+    for(let i of comments.value)
+      commentCheckList.value.push(i.commentId);
   } else {
-    commentCheckList.value = comments.value.map(comment => comment.commentId);
+    commentCheckList.value = [];
   }
 };
 
@@ -179,6 +204,32 @@ const handleSearch = async () => {
   response = await getCommentList(data);
   comments.value = response.data.commentList;
 };
+
+const clear = async () => {
+  selectedSortDirection.value = {
+    sort : 'desc',
+    column: 'createdDate',
+  }
+  selectedSemester.value = '';
+  data.name = '';
+  data.semester= '';
+  data.content = '';
+  data.column = 'createdDate';
+  data.sortDirection = '';
+
+  console.log("data : " +data);
+
+  response = await getCommentList(data);
+  comments.value = response.data.commentList;
+  paging.value = response.data.pagingUtil;
+}
+
+const changePage = async (page) => {
+  data.page = page
+  response = await getCommentList(data);
+  comments.value = response.data.commentList;
+  paging.value = response.data.pagingUtil;
+}
 </script>
 
 <style scoped>
