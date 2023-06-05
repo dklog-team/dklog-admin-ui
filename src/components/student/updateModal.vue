@@ -1,8 +1,7 @@
 <template>
-  <dialog class="modal modal-open rounded-3xl bg-transparent" v-if="showModal">
-    <form method="dialog" class="modal-box w-full shadow-lg">
-      <h2 class="mt-5 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">수정할 학생의 정보를 입력해주세요</h2>
-      <div class="mt-5 sm:mx-auto sm:w-full sm:max-w-sm">
+    <div class="modal-box w-full shadow-lg">
+      <h1 class="text-xl font-bold w-full mb-4 text-start">수정할 학생의 정보를 입력해주세요</h1>
+      <div class="mt-5 w-full sm:mx-auto sm:w-full sm:max-w-sm">
         <div class="mb-4">
           <label for="name" class="block text-sm font-medium leading-6 text-gray-900">이름</label>
           <div class="mt-2">
@@ -49,11 +48,10 @@
 
       </div>
       <div class="modal-action flex">
-        <button type="button" class="btn text-white shadow-sm" @click="handleOk">수정</button>
-        <button type="button" class="btn btn-outline text-black shadow-sm" @click="handleClose">취소</button>
+        <a href="#" type="button" class="btn text-white shadow-sm" @click="handleOk">수정</a>
+        <a href="#" type="button" class="btn btn-outline text-black shadow-sm" @click="handleClose">취소</a>
       </div>
-    </form>
-  </dialog>
+    </div>
 </template>
 
 <script setup>
