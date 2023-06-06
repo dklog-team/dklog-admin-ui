@@ -1,12 +1,17 @@
 import request from "./core/request.js";
 
-export const getCommentList = () => {
-    const url = `/comments`
+export const getCommentList = (data) => {
+    const uri = `/comments`
     const config = {
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization' : 'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI0IiwiaWF0IjoxNjg1NDI1NTgyfQ.6SOrwY9n0QzBNkl0Tew0RxvnUjmdBNx_YqqFMVntk4s'
-        },
+        params: data,
     };
-    return request.get(url,config)
+    return request.get(uri,config)
+};
+
+export const deleteCommentList = (data) => {
+    const uri = `/comments/resources`
+    const config = {
+
+    };
+    return request.post(uri,data,config)
 };
