@@ -188,10 +188,10 @@ const handleAllCheckBox = () => {
 const handleDirection = async () => {
     response = await getList(requestData.value)
     posts.value = response.data.postList
+    paging.value = response.data.pagingUtil
 }
 
 const changePage = async (page) => {
-    console.log("changePage: " +page)
     requestData.value.page = page
     response = await getList(requestData.value)
     posts.value = response.data.postList
