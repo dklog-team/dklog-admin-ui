@@ -51,6 +51,13 @@ const routes = [
         },
         component: () => import('./../views/ImageAdmin.vue'),
     },
+    {
+        path: '/sms',
+        meta: {
+            hide: true,
+        },
+        component: () => import('./../views/SmsAdmin.vue'),
+    },
 ]
 
 const router = createRouter({
