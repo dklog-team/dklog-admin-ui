@@ -1,5 +1,5 @@
 <template>
-  <div class="flex w-96 flex-col justify-between border-e bg-gray-100">
+  <div class="flex min-h-screen w-96 flex-col justify-between border-e bg-gray-100">
     <div>
       <!-- logo -->
       <div class="flex p-4">
@@ -47,7 +47,7 @@
           <span class="text-md font-medium">학생 관리</span>
         </a>
         <a
-            href="#"
+            href="/sms"
             class="flex items-center gap-2 rounded-lg bg-gray-100 px-3 py-3 text-gray-500 hover:bg-gray-200 hover:text-gray-700"
         >
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
