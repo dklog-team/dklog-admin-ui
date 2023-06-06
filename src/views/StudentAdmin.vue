@@ -1,7 +1,7 @@
 <template>
   <div class="px-16 mt-16 flex justify-between">
     <div>
-      <h1 class="text-2xl font-bold tracking-tight text-gray-900">학생 관리 페이지</h1>
+      <h1 class="text-2xl font-bold tracking-tight text-gray-900">학생 관리</h1>
     </div>
     <div class="flex justify-end">
       <button class="btn btn-ghost w-16 px-1 bg-gray-100 hover:bg-gray-200 mr-4" v-show="checkIdList.length !== 0"
