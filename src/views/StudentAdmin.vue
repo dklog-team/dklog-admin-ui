@@ -10,10 +10,10 @@
       <button class="btn btn-secondary w-16 px-1" @click="clickRegisterStudent">등록</button>
     </div>
   </div>
-  <div class="px-16 mt-6 flex justify-between">
-    <div class="flex items-center w-3/12">
+  <div class="px-16 mt-6 flex justify-start">
+    <div class="flex items-center w-2/12 mr-4">
       <select id="selectSemester" v-model="selectedSemester" @change="handleSemesterSelect"
-              class="select select-bordered w-6/12 max-w-xs">
+              class="select select-bordered w-full max-w-xs">
         <option value="" disabled>기수</option>
         <option value="">전체</option>
         <option v-for="number in 10" :value="number">{{ number }}</option>
@@ -22,8 +22,8 @@
     <div class="flex">
       <div class="input-group w-fit border-2 rounded-xl mr-4">
         <input type="text" placeholder="학생 이름으로 검색" class="input focus:outline-none" v-model="data.name"
-               @keyup.enter="printStudentList"/>
-        <button class="btn btn-circle btn-ghost" @click="printStudentList">
+               @keyup.enter="handleSearch"/>
+        <button class="btn btn-circle btn-ghost" @click="handleSearch">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
                stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -92,7 +92,29 @@
         </th>
         <th class="bg-base-100">전화 번호</th>
         <th class="bg-base-100">기수</th>
-        <th class="bg-base-100">가입 현황</th>
+        <th class="bg-base-100">
+          <button v-if="selectedSort.column !== 'authStatus'" @click="handleSort('authStatus')" class="flex">가입 현황
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5 opacity-0">
+              <path fill-rule="evenodd"
+                    d="M10 15a.75.75 0 01-.75-.75V7.612L7.29 9.77a.75.75 0 01-1.08-1.04l3.25-3.5a.75.75 0 011.08 0l3.25 3.5a.75.75 0 11-1.08 1.04l-1.96-2.158v6.638A.75.75 0 0110 15z"
+                    clip-rule="evenodd"/>
+            </svg>
+          </button>
+          <button v-if="selectedSort.column === 'authStatus'" class="text-primary flex" @click="handleSort('authStatus')">가입 현황
+            <svg v-if="selectedSort.sort === 'asc'" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
+                 fill="currentColor" class="w-5 h-5">
+              <path fill-rule="evenodd"
+                    d="M10 15a.75.75 0 01-.75-.75V7.612L7.29 9.77a.75.75 0 01-1.08-1.04l3.25-3.5a.75.75 0 011.08 0l3.25 3.5a.75.75 0 11-1.08 1.04l-1.96-2.158v6.638A.75.75 0 0110 15z"
+                    clip-rule="evenodd"/>
+            </svg>
+            <svg v-if="selectedSort.sort === 'desc'" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
+                 fill="currentColor" class="w-5 h-5">
+              <path fill-rule="evenodd"
+                    d="M10 5a.75.75 0 01.75.75v6.638l1.96-2.158a.75.75 0 111.08 1.04l-3.25 3.5a.75.75 0 01-1.08 0l-3.25-3.5a.75.75 0 111.08-1.04l1.96 2.158V5.75A.75.75 0 0110 5z"
+                    clip-rule="evenodd"/>
+            </svg>
+          </button>
+        </th>
         <th class="bg-base-100">관리</th>
       </tr>
       </thead>
@@ -240,6 +262,11 @@ const handleSort = (column) => {
   printStudentList();
 }
 
+const handleSearch = () => {
+  data.page = 1;
+  printStudentList();
+}
+
 const openModal = (index) => {
   studentInfo.value.studentId = studentsData.value[index].studentId
   studentInfo.value.name = studentsData.value[index].name
@@ -329,7 +356,6 @@ const clickStudentName = async (studentId) => {
   if (memberData.value.email === null) {
     memberData.value.email = '이메일 정보 없음';
   }
-
 }
 
 const closeMemberModal = () => {
