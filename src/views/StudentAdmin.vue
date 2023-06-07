@@ -12,7 +12,7 @@
   </div>
   <div class="px-16 mt-6 flex justify-start">
     <div class="flex items-center w-2/12 mr-4">
-      <select id="selectSemester" v-model="selectedSemester" @change="handleSemesterSelect"
+      <select id="selectSemester" v-model="data.semester" @change="printStudentList"
               class="select select-bordered w-full max-w-xs">
         <option value="" disabled>기수</option>
         <option value="">전체</option>
@@ -128,12 +128,11 @@
         <td>{{ item.studentId }}</td>
         <td>
           <p v-if="item.authStatus === 'N'">{{ item.name }}</p>
-          <a href="#member-modal" v-if="item.authStatus === 'Y'" @click="clickStudentName(item.studentId, index)" class="hover:btn-link">
+          <a v-if="item.authStatus === 'Y'" @click="clickStudentName(item.studentId, index)" class="hover:btn-link">
             {{ item.name }}
           </a>
           <div class="modal" id="member-modal">
-            <member-modal :show-modal="isShowMemberModal" :member-info="memberData"
-                          @close-modal="closeMemberModal"></member-modal>
+            <member-modal :member-info="memberData" @close-modal="closeMemberModal"></member-modal>
           </div>
         </td>
         <td>{{ item.phoneNumber }}</td>
@@ -141,13 +140,13 @@
         <td>
           <div v-if="item.authStatus === 'Y'" class="flex items-center">
             <span class="relative flex h-3 w-3">
-              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-              <span class="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
+              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-success opacity-75"></span>
+              <span class="relative inline-flex rounded-full h-3 w-3 bg-success"></span>
             </span>
             <p class="ml-2">인증 완료</p>
           </div>
           <div v-if="item.authStatus === 'N'" class="flex items-center">
-            <span class="relative inline-flex rounded-full h-3 w-3 bg-red-500"/>
+            <span class="relative inline-flex rounded-full h-3 w-3 bg-error"/>
             <p class="ml-2">미인증</p>
           </div>
         </td>
@@ -160,8 +159,7 @@
             </svg>
           </a>
           <div class="modal" id="update-modal">
-            <update-modal :student-info="studentInfo" :show-modal="showUpdateModal" @handle-update=handleUpdate
-                          @close-modal="closeModal"></update-modal>
+            <update-modal :student-info="studentInfo" @handle-update=handleUpdate></update-modal>
           </div>
           <button id="deleteOneStudentBtn" class="btn btn-circle btn-ghost"
                   @click="handleDeleteOne(item.studentId, item.name)">
@@ -180,7 +178,7 @@
 </template>
 
 <script setup>
-import {ref, onMounted} from "vue";
+import {ref} from "vue";
 import {deleteStudent, getStudents, updateStudent} from "../api/student.js";
 import router from "../routes/index.js";
 import UpdateModal from "../components/student/updateModal.vue";
@@ -194,7 +192,6 @@ const selectedSort = ref({
   sort: 'desc',
   column: 'studentId'
 });
-const selectedSemester = ref('');
 const studentInfo = ref({
   studentId: '',
   name: '',
@@ -204,7 +201,6 @@ const studentInfo = ref({
 })
 const selectedAll = ref(false);
 const checkIdList = ref([]);
-const showUpdateModal = ref(false);
 const data = {
   name: '',
   semester: '',
@@ -213,7 +209,6 @@ const data = {
   page: 1
 }
 const load = ref(false);
-const isShowMemberModal = ref(false);
 const memberData = ref({
   memberId: '',
   username: '',
@@ -229,21 +224,7 @@ const printStudentList = async () => {
   pagination.value = response.data.pagingUtil;
   load.value = true;
 }
-
-onMounted(() => {
-  console.log('mounted!')
-  printStudentList();
-})
-
-const handleSemesterSelect = () => {
-  if (selectedSemester.value !== '') {
-    data.semester = selectedSemester.value;
-  } else {
-    data.semester = '';
-  }
-
-  printStudentList();
-};
+printStudentList();
 
 const handleSort = (column) => {
   if (selectedSort.value.column === column) {
@@ -273,20 +254,14 @@ const openModal = (index) => {
   studentInfo.value.phoneNumber = studentsData.value[index].phoneNumber
   studentInfo.value.semester = studentsData.value[index].semester
   studentInfo.value.authStatus = studentsData.value[index].authStatus
-  showUpdateModal.value = true;
 }
 
 const handleUpdate = async () => {
   let answer = confirm('수정하시겠습니까?')
   if (answer) {
     await updateStudent(studentInfo.value)
-    closeModal()
     await printStudentList()
   }
-}
-
-const closeModal = () => {
-  showUpdateModal.value = false;
 }
 
 const handleAllCheck = () => {
@@ -330,7 +305,6 @@ const clear = () => {
     sort: 'desc',
     column: 'studentId'
   }
-  selectedSemester.value = '';
   data.name = '';
   data.semester = '';
   data.column = '';
@@ -350,16 +324,15 @@ const clickRegisterStudent = () => {
 
 // memberModal 관련
 const clickStudentName = async (studentId) => {
-  isShowMemberModal.value = true;
   const response = await getMember(studentId);
   memberData.value = response.data
   if (memberData.value.email === null) {
     memberData.value.email = '이메일 정보 없음';
   }
+  location.href = "#member-modal"
 }
 
 const closeMemberModal = () => {
-  isShowMemberModal.value = false;
   memberData.value = {
     memberId: '',
     username: '',

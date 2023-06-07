@@ -49,7 +49,7 @@
       </div>
       <div class="modal-action flex">
         <a href="#" type="button" class="btn text-white shadow-sm" @click="handleOk">수정</a>
-        <a href="#" type="button" class="btn btn-outline text-black shadow-sm" @click="handleClose">취소</a>
+        <a href="#" type="button" class="btn btn-outline text-black shadow-sm">취소</a>
       </div>
     </div>
 </template>
@@ -58,10 +58,6 @@
 import {defineProps, defineEmits} from 'vue';
 
 const props = defineProps({
-  showModal: {
-    type: Boolean,
-    required: true
-  },
   studentInfo: {
     type: Object,
     required: true
@@ -72,10 +68,6 @@ const emit = defineEmits(['handle-Update', 'close-Modal'])
 
 const handleOk = async () => {
   emit('handle-Update')
-}
-
-const handleClose = () => {
-  emit('close-Modal')
 }
 </script>
 

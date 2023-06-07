@@ -48,10 +48,6 @@ import {defineProps, defineEmits} from 'vue';
 import {deleteMember} from "../../api/member.js";
 
 const props = defineProps({
-  showModal: {
-    type: Boolean,
-    required: true
-  },
   memberInfo: {
     type: Object,
     required: true
