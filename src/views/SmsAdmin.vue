@@ -15,13 +15,59 @@
       <table class="table w-full">
         <!-- head -->
         <thead>
-        <tr>
-          <th>요청일시</th>
-          <th>상태</th>
-          <th>Type</th>
-          <th>발신번호</th>
-          <th>수신번호</th>
-          <th>요청결과</th>
+        <tr class="border-b-2">
+          <th class="bg-base-100">
+            <button v-if="selectedSort.column !== 'smsSendResponseId'" @click="clickSort('smsSendResponseId')" class="flex">요청일시
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5 opacity-0">
+                <path fill-rule="evenodd"
+                      d="M10 15a.75.75 0 01-.75-.75V7.612L7.29 9.77a.75.75 0 01-1.08-1.04l3.25-3.5a.75.75 0 011.08 0l3.25 3.5a.75.75 0 11-1.08 1.04l-1.96-2.158v6.638A.75.75 0 0110 15z"
+                      clip-rule="evenodd"/>
+              </svg>
+            </button>
+            <button v-if="selectedSort.column === 'smsSendResponseId'" class="text-primary flex" @click="clickSort('smsSendResponseId')">
+              요청일시
+              <svg v-if="selectedSort.direction === 'asc'" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
+                   fill="currentColor" class="w-5 h-5">
+                <path fill-rule="evenodd"
+                      d="M10 15a.75.75 0 01-.75-.75V7.612L7.29 9.77a.75.75 0 01-1.08-1.04l3.25-3.5a.75.75 0 011.08 0l3.25 3.5a.75.75 0 11-1.08 1.04l-1.96-2.158v6.638A.75.75 0 0110 15z"
+                      clip-rule="evenodd"/>
+              </svg>
+              <svg v-if="selectedSort.direction === 'desc'" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
+                   fill="currentColor" class="w-5 h-5">
+                <path fill-rule="evenodd"
+                      d="M10 5a.75.75 0 01.75.75v6.638l1.96-2.158a.75.75 0 111.08 1.04l-3.25 3.5a.75.75 0 01-1.08 0l-3.25-3.5a.75.75 0 111.08-1.04l1.96 2.158V5.75A.75.75 0 0110 5z"
+                      clip-rule="evenodd"/>
+              </svg>
+            </button>
+          </th>
+          <th class="bg-base-100">
+            <button v-if="selectedSort.column !== 'status_name'" @click="clickSort('status_name')" class="flex">상태
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5 opacity-0">
+                <path fill-rule="evenodd"
+                      d="M10 15a.75.75 0 01-.75-.75V7.612L7.29 9.77a.75.75 0 01-1.08-1.04l3.25-3.5a.75.75 0 011.08 0l3.25 3.5a.75.75 0 11-1.08 1.04l-1.96-2.158v6.638A.75.75 0 0110 15z"
+                      clip-rule="evenodd"/>
+              </svg>
+            </button>
+            <button v-if="selectedSort.column === 'status_name'" class="text-primary flex" @click="clickSort('status_name')">
+              상태
+              <svg v-if="selectedSort.direction === 'asc'" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
+                   fill="currentColor" class="w-5 h-5">
+                <path fill-rule="evenodd"
+                      d="M10 15a.75.75 0 01-.75-.75V7.612L7.29 9.77a.75.75 0 01-1.08-1.04l3.25-3.5a.75.75 0 011.08 0l3.25 3.5a.75.75 0 11-1.08 1.04l-1.96-2.158v6.638A.75.75 0 0110 15z"
+                      clip-rule="evenodd"/>
+              </svg>
+              <svg v-if="selectedSort.direction === 'desc'" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
+                   fill="currentColor" class="w-5 h-5">
+                <path fill-rule="evenodd"
+                      d="M10 5a.75.75 0 01.75.75v6.638l1.96-2.158a.75.75 0 111.08 1.04l-3.25 3.5a.75.75 0 01-1.08 0l-3.25-3.5a.75.75 0 111.08-1.04l1.96 2.158V5.75A.75.75 0 0110 5z"
+                      clip-rule="evenodd"/>
+              </svg>
+            </button>
+          </th>
+          <th class="bg-base-100">Type</th>
+          <th class="bg-base-100">발신번호</th>
+          <th class="bg-base-100">수신번호</th>
+          <th class="bg-base-100">요청결과</th>
         </tr>
         </thead>
         <tbody>
@@ -75,6 +121,10 @@ const smsResultData = ref({})
 const loading = ref(true)
 const startDate = ref('')
 const endDate = ref('')
+const selectedSort = ref({
+  direction: 'desc',
+  column: 'smsSendResponseId'
+});
 
 const init = async () => {
   let response = await getSmsRequestDataList()
@@ -90,6 +140,27 @@ const clickShowSmsResultData = async (index) => {
   let messageId = smsSendRequestDataList.value[index].messageId
   smsResultData.value = (await getSmsResultData(messageId)).data
   loadedModal.value = true
+}
+
+const clickSort = async (column) => {
+  if (selectedSort.value.column === column) {
+    if (selectedSort.value.direction === 'desc') {
+      selectedSort.value.direction = 'asc';
+    } else {
+      selectedSort.value.direction = 'desc';
+    }
+  } else {
+    selectedSort.value.column = column;
+    selectedSort.value.direction = 'desc';
+  }
+  let requestData = {
+    sortDirection: selectedSort.value.direction,
+    column: selectedSort.value.column,
+    page: pagingUtil.value.pageNumber
+  }
+  let response = await getSmsRequestDataList(requestData)
+  smsSendRequestDataList.value = response.data.smsSendRequestDataList
+  pagingUtil.value = response.data.pagingUtil
 }
 
 const clickDateRangeBtn = async () => {
