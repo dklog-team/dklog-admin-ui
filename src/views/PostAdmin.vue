@@ -17,7 +17,7 @@
                     <option value="title">제목</option>
                     <option value="contentText">내용</option>
                 </select>
-                <input type="text" placeholder="검색~" class="input focus:outline-none" v-model="requestData.keyword"
+                <input type="text" placeholder="검색어를 입력하세요" class="input focus:outline-none" v-model="requestData.keyword"
                        @keyup.enter="handleDirection"/>
                 <button class="btn btn-circle btn-ghost" @click="handleDirection">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
@@ -226,7 +226,6 @@ import Pagination from "../components/common/Pagination.vue";
 
 let response
 const posts = ref([]);
-const allPageCheckList = ([]);
 const checkList = ref([]);
 const checkBoolean = ref();
 let requestData = ref({
@@ -246,6 +245,9 @@ const getPostList = async () => {
     response = await getList(requestData.value)
     posts.value = response.data.postList
     paging.value = response.data.pagingUtil
+    if(posts.value.length == 0){
+        load.value = false
+    }
 }
 
 const init = async () => {
@@ -294,9 +296,6 @@ const handleAllCheckBox = () => {
 const handleDirection = async () => {
     requestData.value.page = 1
     await getPostList()
-    if(posts.value.length == 0){
-        load.value = false
-    }
 }
 
 const changePage = async (page) => {
