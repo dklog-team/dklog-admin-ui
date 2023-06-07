@@ -2,9 +2,15 @@
     <div class="px-16 mt-16 flex justify-between">
         <h1 class="text-2xl font-bold tracking-tight text-gray-900">게시글 관리</h1>
         <button class="btn opacity-0 cursor-default">zzz</button>
-        <button v-if="checkList != ''" class="btn btn-active btn-ghost" @click="deleteListFunc">삭제</button>
+        <button v-if="checkList != ''" class="btn btn-ghost bg-gray-100" @click="deleteListFunc">삭제</button>
     </div>
-    <div class="px-16 mt-6 flex justify-end">
+    <div class="px-16 mt-6 flex justify-between">
+        <div class="flex items-center gap-x-4">
+            <input v-model="requestData.startDate" type="date" class="input input-bordered w-full max-w-min cursor-pointer"/>
+            <span class="text-xl">~</span>
+            <input v-model="requestData.endDate" type="date" class="input input-bordered w-full max-w-min cursor-pointer"/>
+            <button class="btn btn-secondary" @click="clickDateRangeBtn">적용</button>
+        </div>
         <div class="flex">
             <div class="input-group w-fit border-2 rounded-xl mr-4">
                 <select class="select" v-model="requestData.keywordType">
@@ -21,6 +27,7 @@
                     </svg>
                 </button>
             </div>
+            <button class="btn btn-ghost bg-gray-100" @click="reset">초기화</button>
         </div>
     </div>
     <div class="px-16 mt-6 overflow-x-auto w-full">
@@ -32,15 +39,15 @@
                            v-model="checkBoolean"/>
                 </th>
                 <th class="bg-base-100">
-                    <button v-if="requestData.column !== 'postId'" @click="handleSort('postId')" class="flex">등록번호
+                    <button v-if="requestData.column !== 'member.username'" @click="handleSort('member.username')" class="flex">이름
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5 opacity-0">
                             <path fill-rule="evenodd"
                                   d="M10 15a.75.75 0 01-.75-.75V7.612L7.29 9.77a.75.75 0 01-1.08-1.04l3.25-3.5a.75.75 0 011.08 0l3.25 3.5a.75.75 0 11-1.08 1.04l-1.96-2.158v6.638A.75.75 0 0110 15z"
                                   clip-rule="evenodd"/>
                         </svg>
                     </button>
-                    <button v-if="requestData.column === 'postId'" class="text-primary flex" @click="handleSort('postId')">
-                        등록번호
+                    <button v-if="requestData.column === 'member.username'" class="text-primary flex" @click="handleSort('member.username')">
+                        이름
                         <svg v-if="requestData.sortDirection === 'asc'" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
                              fill="currentColor" class="w-5 h-5">
                             <path fill-rule="evenodd"
@@ -54,9 +61,6 @@
                                   clip-rule="evenodd"/>
                         </svg>
                     </button>
-                </th>
-                <th class="bg-base-100">
-                    이름
                 </th>
                 <th class="bg-base-100">
                     <button v-if="requestData.column !== 'title'" @click="handleSort('title')" class="flex">제목
@@ -106,6 +110,30 @@
                         </svg>
                     </button>
                 </th>
+                <th class="bg-base-100">
+                    <button v-if="requestData.column !== 'createdDate'" @click="handleSort('createdDate')" class="flex">작성일
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5 opacity-0">
+                            <path fill-rule="evenodd"
+                                  d="M10 15a.75.75 0 01-.75-.75V7.612L7.29 9.77a.75.75 0 01-1.08-1.04l3.25-3.5a.75.75 0 011.08 0l3.25 3.5a.75.75 0 11-1.08 1.04l-1.96-2.158v6.638A.75.75 0 0110 15z"
+                                  clip-rule="evenodd"/>
+                        </svg>
+                    </button>
+                    <button v-if="requestData.column === 'createdDate'" class="text-primary flex" @click="handleSort('createdDate')">
+                        작성일
+                        <svg v-if="requestData.sortDirection === 'asc'" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
+                             fill="currentColor" class="w-5 h-5">
+                            <path fill-rule="evenodd"
+                                  d="M10 15a.75.75 0 01-.75-.75V7.612L7.29 9.77a.75.75 0 01-1.08-1.04l3.25-3.5a.75.75 0 011.08 0l3.25 3.5a.75.75 0 11-1.08 1.04l-1.96-2.158v6.638A.75.75 0 0110 15z"
+                                  clip-rule="evenodd"/>
+                        </svg>
+                        <svg v-if="requestData.sortDirection === 'desc'" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
+                             fill="currentColor" class="w-5 h-5">
+                            <path fill-rule="evenodd"
+                                  d="M10 5a.75.75 0 01.75.75v6.638l1.96-2.158a.75.75 0 111.08 1.04l-3.25 3.5a.75.75 0 01-1.08 0l-3.25-3.5a.75.75 0 111.08-1.04l1.96 2.158V5.75A.75.75 0 0110 5z"
+                                  clip-rule="evenodd"/>
+                        </svg>
+                    </button>
+                </th>
                 <th class="bg-base-100"></th>
             </tr>
             </thead>
@@ -115,9 +143,6 @@
                     <input type="checkbox" class="checkbox" v-model="checkList" :value="i.postId"/>
                 </th>
                 <td>
-                   {{i.postId}}
-                </td>
-                <td>
                     <div class="flex items-center space-x-3">
                         <div class="avatar">
                             <div class="mask mask-squircle w-12 h-12">
@@ -126,8 +151,6 @@
                         </div>
                         <div>
                             <div class="font-bold">{{ i.username }}</div>
-                            <div class="text-sm opacity-50">게시일 {{ i.createdDate }}</div>
-                            <div class="text-sm opacity-50" v-if="i.modifiedDate">수정일 {{ i.createdDate }}</div>
                         </div>
                     </div>
                 </td>
@@ -165,8 +188,8 @@
                             <div class="flex">
                                 <div class="modal-action">
                                     <label :for="i.postId" class="btn btn-active btn-ghost"
-                                           @click="deleteOneFunc(i.postId)">삭제</label>
-                                    <label :for="i.postId" class="btn">Close!</label>
+                                           @click="deleteOneFunc(i.postId, i.username)">삭제</label>
+                                    <label :for="i.postId" class="btn"></label>
                                 </div>
                             </div>
                         </label>
@@ -177,9 +200,10 @@
                     </div>
                 </td>
                 <td>{{ i.views }}</td>
+                <td>{{ i.preCreatedDate }}</td>
                 <th>
                     <button id="deleteOneStudentBtn" class="btn btn-circle btn-ghost"
-                            @click="deleteOneFunc(i.postId)">
+                            @click="deleteOneFunc(i.postId, i.username)">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                              stroke="currentColor" class="w-6 h-6">
                             <path stroke-linecap="round" stroke-linejoin="round"
@@ -205,48 +229,57 @@ const posts = ref([]);
 const checkList = ref([]);
 const checkBoolean = ref();
 let requestData = ref({
-    column: "postId",
+    column: "createdDate",
     sortDirection: "desc",
     keywordType: "title",
     keyword: "",
-    page: 1
+    page: 1,
+    startDate: "",
+    endDate:""
 })
 //페이지 관련 -> 컴포넌트로 빼보기
 const paging = ref({});
 const load = ref(false)
 
-const init = async () => {
+const getPostList = async () => {
     response = await getList(requestData.value)
+    console.log(response.data.postList)
     posts.value = response.data.postList
     paging.value = response.data.pagingUtil
-    console.log(response.data.pagingUtil)
+}
+
+const init = async () => {
+    await getPostList()
     load.value = true
 }
 init()
 
 const deleteListFunc = async () => {
-    const postIds = checkList.value
-    const id = {
-        postIds
+    let answer = confirm(`${checkList.value.length}명의 학생을 삭제하시겠습니까?`)
+    if(answer){
+        const postIds = checkList.value
+        const id = {
+            postIds
+        }
+        await deleteList(id)
+        await getPostList()
+        alert("삭제가 완료되었습니다~")
     }
-    await deleteList(id)
-    console.log(requestData.value)
-    response = await getList(requestData.value)
-    posts.value = response.data.postList
-    alert("삭제가 완료되었습니다~")
 }
 
-const deleteOneFunc = async (postId) => {
-    const deleteOne = []
-    deleteOne[0] = postId
-    const postIds = deleteOne
-    const id = {
-        postIds
+const deleteOneFunc = async (postId, username) => {
+    let answer = confirm(`${username}의 게시글을 삭제하시겠습니까?`)
+    if(answer){
+        const deleteOne = []
+        deleteOne[0] = postId
+        const postIds = deleteOne
+        const id = {
+            postIds
+        }
+        await deleteList(id)
+        await getPostList()
+        alert("삭제가 완료되었습니다~")
     }
-    await deleteList(id)
-    response = await getList(requestData.value)
-    posts.value = response.data.postList
-    alert("삭제가 완료되었습니다~")
 }
 
 const handleAllCheckBox = () => {
@@ -259,16 +292,17 @@ const handleAllCheckBox = () => {
 }
 
 const handleDirection = async () => {
-    response = await getList(requestData.value)
-    posts.value = response.data.postList
-    paging.value = response.data.pagingUtil
+    requestData.value.page = 1
+    await getPostList()
+    if(posts.value.length == 0){
+        load.value = false
+    }
 }
 
 const changePage = async (page) => {
     requestData.value.page = page
-    response = await getList(requestData.value)
-    posts.value = response.data.postList
-    paging.value = response.data.pagingUtil
+    checkBoolean.value = false
+    await getPostList()
 }
 
 const handleSort = async (column) => {
@@ -282,9 +316,26 @@ const handleSort = async (column) => {
         requestData.value.column = column;
         requestData.value.sortDirection = 'desc';
     }
-    response = await getList(requestData.value)
-    posts.value = response.data.postList
-    paging.value = response.data.pagingUtil
+    await getPostList()
+}
+
+const clickDateRangeBtn = async () => {
+    if(requestData.value.startDate<=requestData.value.endDate){
+        requestData.value.page=1
+        await getPostList()
+    }else{
+        alert("범위를 다시 한번 확인해주세요")
+    }
+}
+
+const reset = async () => {
+    requestData.value.startDate = ""
+    requestData.value.endDate = ""
+    requestData.value.keywordType = "title"
+    requestData.value.keyword = ""
+    requestData.value.column = "createdDate"
+    requestData.value.sortDirection = "desc"
+    await getPostList()
 }
 </script>
 
