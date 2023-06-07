@@ -189,7 +189,7 @@
                                 <div class="modal-action">
                                     <label :for="i.postId" class="btn btn-active btn-ghost"
                                            @click="deleteOneFunc(i.postId, i.username)">삭제</label>
-                                    <label :for="i.postId" class="btn"></label>
+                                    <label :for="i.postId" class="btn">돌아가기</label>
                                 </div>
                             </div>
                         </label>
