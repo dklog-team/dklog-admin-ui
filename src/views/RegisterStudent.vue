@@ -45,12 +45,12 @@ const data = ref({
   semester: ''
 });
 
-const register = () => {
+const register = async () => {
   if(data.value.name === '' || data.value.phoneNumber === '' || data.value.semester === ''){
     alert('모든 데이터를 입력해주세요.');
     return
   }
-  registerStudent(data.value)
+  await registerStudent(data.value)
   router.replace(`/student`);
 }
 
