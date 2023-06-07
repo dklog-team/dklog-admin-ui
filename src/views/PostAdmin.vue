@@ -2,9 +2,15 @@
     <div class="px-16 mt-16 flex justify-between">
         <h1 class="text-2xl font-bold tracking-tight text-gray-900">게시글 관리</h1>
         <button class="btn opacity-0 cursor-default">zzz</button>
-        <button v-if="checkList != ''" class="btn btn-active btn-ghost" @click="deleteListFunc">삭제</button>
+        <button v-if="checkList != ''" class="btn btn-ghost bg-gray-100" @click="deleteListFunc">삭제</button>
     </div>
-    <div class="px-16 mt-6 flex justify-start">
+    <div class="px-16 mt-6 flex justify-between">
+        <div class="flex items-center gap-x-4">
+            <input v-model="requestData.startDate" type="date" class="input input-bordered w-full max-w-min cursor-pointer"/>
+            <span class="text-xl">~</span>
+            <input v-model="requestData.endDate" type="date" class="input input-bordered w-full max-w-min cursor-pointer"/>
+            <button class="btn btn-secondary" @click="clickDateRangeBtn">적용</button>
+        </div>
         <div class="flex">
             <div class="input-group w-fit border-2 rounded-xl mr-4">
                 <select class="select" v-model="requestData.keywordType">
@@ -21,6 +27,7 @@
                     </svg>
                 </button>
             </div>
+            <button class="btn btn-ghost bg-gray-100" @click="reset">초기화</button>
         </div>
     </div>
     <div class="px-16 mt-6 overflow-x-auto w-full">
@@ -181,8 +188,8 @@
                             <div class="flex">
                                 <div class="modal-action">
                                     <label :for="i.postId" class="btn btn-active btn-ghost"
-                                           @click="deleteOneFunc(i.postId)">삭제</label>
-                                    <label :for="i.postId" class="btn"></label>
+                                           @click="deleteOneFunc(i.postId, i.username)">삭제</label>
+                                    <label :for="i.postId" class="btn">돌아가기</label>
                                 </div>
                             </div>
                         </label>
@@ -196,7 +203,7 @@
                 <td>{{ i.preCreatedDate }}</td>
                 <th>
                     <button id="deleteOneStudentBtn" class="btn btn-circle btn-ghost"
-                            @click="deleteOneFunc(i.postId)">
+                            @click="deleteOneFunc(i.postId, i.username)">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                              stroke="currentColor" class="w-6 h-6">
                             <path stroke-linecap="round" stroke-linejoin="round"
@@ -227,7 +234,9 @@ let requestData = ref({
     sortDirection: "desc",
     keywordType: "title",
     keyword: "",
-    page: 1
+    page: 1,
+    startDate: "",
+    endDate:""
 })
 //페이지 관련 -> 컴포넌트로 빼보기
 const paging = ref({});
@@ -258,16 +267,19 @@ const deleteListFunc = async () => {
     }
 }
 
-const deleteOneFunc = async (postId) => {
-    const deleteOne = []
-    deleteOne[0] = postId
-    const postIds = deleteOne
-    const id = {
-        postIds
+const deleteOneFunc = async (postId, username) => {
+    let answer = confirm(`${username}의 게시글을 삭제하시겠습니까?`)
+    if(answer){
+        const deleteOne = []
+        deleteOne[0] = postId
+        const postIds = deleteOne
+        const id = {
+            postIds
+        }
+        await deleteList(id)
+        await getPostList()
+        alert("삭제가 완료되었습니다~")
     }
-    await deleteList(id)
-    await getPostList()
-    alert("삭제가 완료되었습니다~")
 }
 
 const handleAllCheckBox = () => {
@@ -277,7 +289,6 @@ const handleAllCheckBox = () => {
             checkList.value.push(i.postId)
         }
     }
-    console.log(checkList.value)
 }
 
 const handleDirection = async () => {
@@ -305,6 +316,25 @@ const handleSort = async (column) => {
         requestData.value.column = column;
         requestData.value.sortDirection = 'desc';
     }
+    await getPostList()
+}
+
+const clickDateRangeBtn = async () => {
+    if(requestData.value.startDate<=requestData.value.endDate){
+        requestData.value.page=1
+        await getPostList()
+    }else{
+        alert("범위를 다시 한번 확인해주세요")
+    }
+}
+
+const reset = async () => {
+    requestData.value.startDate = ""
+    requestData.value.endDate = ""
+    requestData.value.keywordType = "title"
+    requestData.value.keyword = ""
+    requestData.value.column = "createdDate"
+    requestData.value.sortDirection = "desc"
     await getPostList()
 }
 </script>
