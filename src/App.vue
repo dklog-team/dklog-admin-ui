@@ -11,10 +11,10 @@
 <script setup>
 import SideBar from "./components/common/SideBar.vue";
 import Header from "./components/common/Header.vue";
-// import { useRouter } from "vue-router";
-//
-// const route = useRouter()
-// console.log(route.currentRoute.value)
+
+if (import.meta.env.PROD) {
+  console.log = () => {}
+}
 </script>
 
 <style scoped>
