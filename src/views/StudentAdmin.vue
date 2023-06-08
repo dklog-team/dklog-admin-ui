@@ -345,7 +345,7 @@ const changePage = async (page) => {
 }
 
 const clickRegisterStudent = () => {
-  router.replace('/new/student');
+  router.replace('/student/new');
 };
 
 // memberModal 관련
