@@ -44,7 +44,7 @@
           <div>
             <StudentAuthChart/>
           </div>
-          <div class="text-center">
+          <div v-if="loaded" class="text-center">
             <h2 class="text-8xl text-gray-500 font-bold">{{ `${Math.floor(studentAuthData.percent)}%` }}</h2>
             <label for="noAuthStudentsModal" class="btn btn-ghost btn-sm btn-active w-full mt-8">미인증 교육생 확인</label>
             <!-- modal -->
@@ -92,11 +92,11 @@
     <div class="flex justify-between gap-x-6">
       <div v-for="(post, index) in recentPostList" :key="index" class="mt-4 w-1/4">
         <div class="border border-gray-200 rounded-lg shadow">
-          <div>
+          <div class="cursor-pointer" @click="clickRecentPost(index)">
             <img v-if="post.previewImage != null" :src="post.previewImage"
-                 class="thumbnail-box object-cover border-b h-40"/>
+                 class="border-b h-40 w-full rounded-t-lg"/>
             <div v-else
-                 class="thumbnail-box rounded-lg border-b h-40">
+                 class="rounded-lg border-b h-40">
               <template v-if="index % 2 == 1">
                 <div class="h-full bg-[#f9d72f] text-gray-800 text-2xl rounded-t-lg flex justify-center items-center">
                   <span class="font-bold">dk</span>
@@ -115,10 +115,39 @@
             <div class="h-16">
               <h1 class="font-semibold">{{ post.title }}</h1>
             </div>
-            <div>
-
+            <div class="text-gray-500">
+              <div class="flex justify-between items-center">
+                <div class="flex items-center">
+                  <div class="avatar mr-2">
+                    <div class="w-6 rounded-full ring-2 ring-gray-300">
+                      <img :src="post.picture"/>
+                    </div>
+                  </div>
+                  <span>{{ post.username }}</span>
+                </div>
+                <span>{{ post.createdDate }}</span>
+              </div>
             </div>
-            <div></div>
+            <div class="flex justify-end gap-x-4 mt-4 text-gray-500">
+              <div class="flex items-center gap-x-2">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                     stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                  <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z"/>
+                  <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                </svg>
+                <span>{{ post.views }}</span>
+              </div>
+              <div class="flex items-center gap-x-2">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                     stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                  <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M2.25 12.76c0 1.6 1.123 2.994 2.707 3.227 1.068.157 2.148.279 3.238.364.466.037.893.281 1.153.671L12 21l2.652-3.978c.26-.39.687-.634 1.153-.67 1.09-.086 2.17-.208 3.238-.365 1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z"/>
+                </svg>
+                <span>{{ post.commentCount }}</span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -133,6 +162,7 @@ import {ref} from "vue";
 import {getPopularPostList, getRecentPostList} from "../api/post.js";
 import {getStudentAuthData} from "../api/student.js";
 import StudentAuthChart from "../components/student/StudentAuthChart.vue";
+import index from "vue3-highlightjs";
 
 const allCount = ref()
 const yesterdayCount = ref()
@@ -140,6 +170,7 @@ const todayCount = ref()
 const popularPostList = ref()
 const recentPostList = ref()
 const studentAuthData = ref()
+const loaded = ref(false)
 
 const init = async () => {
   allCount.value = (await getAllCount()).data.count
@@ -152,11 +183,17 @@ const init = async () => {
   console.log(popularPostList.value)
   console.log(recentPostList.value)
   console.log(studentAuthData.value)
+  loaded.value = true
 }
 init()
 
 const clickPopularPost = (index) => {
   let win = window.open(popularPostList.value[index].postUrl, '_blank');
+  win.focus()
+}
+
+const clickRecentPost = (index) => {
+  let win = window.open(recentPostList.value[index].postUrl, '_blank');
   win.focus()
 }
 </script>
