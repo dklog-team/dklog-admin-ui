@@ -11,7 +11,7 @@
   </div>
   <div class="px-16 mt-6 flex justify-start">
     <div class="flex items-center w-3/12 mr-6">
-      <select id="selectSemester" v-model="selectedSemester" @change="handleSemester"
+      <select id="selectSemester" v-model="data.semester" @change="handleSemester"
               class="select select-bordered w-/12 max-w-xs">
         <option value="" disabled>기수</option>
         <option value="">all</option>
@@ -158,7 +158,6 @@ import Pagination from "../components/common/Pagination.vue";
 
 const comments = ref('');
 const selectedColumn = ref('');
-const selectedSemester = ref('');
 const selectedSortDirection = ref({
   sort: 'desc',
   column: 'createdData',
@@ -240,7 +239,7 @@ const handleSortChange = async (column) => {
 };
 
 const handleSemester = async () => {
-  data.semester = selectedSemester.value;
+  console.log(data.semester)
   response = await getCommentList(data);
   comments.value = response.data.commentList;
 };
@@ -260,7 +259,6 @@ const clear = async () => {
     sort: 'desc',
     column: 'createdDate',
   }
-  selectedSemester.value = '';
   data.name = '';
   data.semester = '';
   data.content = '';
@@ -277,7 +275,7 @@ const clear = async () => {
 const handleDate = async () => {
   const request = {
     startDate: startDate.value,
-    endDate: endDate.value
+    endDate: endDate.value,
   }
   response = await getCommentList(request)
   comments.value = response.data.commentList;
@@ -286,10 +284,9 @@ const handleDate = async () => {
 
 const changePage = async (page) => {
   const request = {
-    startDate: startDate,
-    endDate: endDate,
-    page: page
-
+    startDate: startDate.value,
+    endDate: endDate.value,
+    page: page,
   }
   response = await getCommentList(request);
   comments.value = response.data.commentList;
