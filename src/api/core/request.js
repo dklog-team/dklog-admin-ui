@@ -13,6 +13,7 @@ request.interceptors.request.use(
         if (cookies.get('token')) {
             config.headers['Authorization'] = cookies.get('token')
             config.headers['adminId'] = cookies.get('adminId')
+            config.headers['username'] = cookies.get('username')
         }
         return config
     },
