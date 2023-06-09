@@ -31,7 +31,8 @@
         <option value="content">댓글 내용</option>
       </select>
       <div class="input-group w-fit border-2 rounded-xl mr-6">
-        <input type="text" placeholder="검색" v-model="searchText" class="input focus:outline-none" @keyup.enter="handleSearch"/>
+        <input type="text" placeholder="검색" v-model="searchText" class="input focus:outline-none"
+               @keyup.enter="handleSearch"/>
         <button class="btn btn-circle btn-ghost" @click="handleSearch">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                stroke="currentColor" class="w-6 h-6">
@@ -203,22 +204,28 @@ const deleteList = async () => {
   const commentIds = commentCheckList.value;
   const requestData = {commentIds}
 
-  if (confirm(`${commentCheckList.value.length}개의 댓글을 삭제하시겠습니까?`))
+  if (confirm(`${commentCheckList.value.length}개의 댓글을 삭제하시겠습니까?`)) {
     await deleteCommentList(requestData);
-  commentCheckList.value = [];
+    commentCheckList.value = [];
 
-  response = await getCommentList(data);
-  comments.value = response.data.commentList;
+    response = await getCommentList(data);
+    comments.value = response.data.commentList;
+
+    alert("삭제가 완료되었습니다");
+  }
 };
 
 const deleteOne = async (commentId) => {
   const requestData = {commentIds: [commentId]}
 
-  if (confirm("삭제하시겠습니까?"))
+  if (confirm("삭제하시겠습니까?")) {
     await deleteCommentList(requestData);
 
-  response = await getCommentList(data);
-  comments.value = response.data.commentList;
+    response = await getCommentList(data);
+    comments.value = response.data.commentList;
+
+    alert("삭제가 완료되었습니다");
+  }
 };
 
 const handleSortChange = async (column) => {
