@@ -27,17 +27,17 @@ import {getUsername} from "../../api/admin.js";
 const auth = authStore()
 const cookies = useCookies().cookies
 
-const username = ref('')
-
-onBeforeMount(async () => {
-  let adminId = cookies.get('adminId');
-  const requestData = {
-    adminId,
-  }
-  let response = await getUsername(requestData);
-  console.log(response.data)
-  username.value = response.data
-})
+const username = ref(cookies.get('username'))
+//
+// onBeforeMount(async () => {
+//   let adminId = cookies.get('adminId');
+//   const requestData = {
+//     adminId,
+//   }
+//   let response = await getUsername(requestData);
+//   console.log(response.data)
+//   username.value = response.data
+// })
 
 const clickLogoutBtn = async () => {
   auth.logout()
