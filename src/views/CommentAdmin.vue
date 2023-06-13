@@ -1,7 +1,7 @@
 <template>
   <div class="px-16 mt-16 flex justify-between">
     <div>
-      <h1 class="text-2xl font-bold tracking-tight text-gray-900">댓글 관리 페이지</h1>
+      <h1 class="text-2xl font-bold tracking-tight text-gray-900">댓글 관리</h1>
     </div>
     <div class="flex justify-end">
       <button class="btn btn-ghost w-16 px-1 bg-gray-100 hover:bg-gray-200 mr-4" v-show="commentCheckList.length !== 0"
@@ -26,7 +26,6 @@
     </div>
     <div class="flex">
       <select class="select select-bordered w- max-w-xs mr-4" v-model="selectedColumn">
-        <option value="" disabled>검색</option>
         <option value="name">댓글 작성자</option>
         <option value="content">댓글 내용</option>
       </select>
@@ -210,6 +209,7 @@ const deleteList = async () => {
 
     response = await getCommentList(data);
     comments.value = response.data.commentList;
+    paging.value = response.data.pagingUtil
 
     alert("삭제가 완료되었습니다");
   }
@@ -223,6 +223,7 @@ const deleteOne = async (commentId) => {
 
     response = await getCommentList(data);
     comments.value = response.data.commentList;
+    paging.value = response.data.pagingUtil
 
     alert("삭제가 완료되었습니다");
   }
@@ -243,12 +244,14 @@ const handleSortChange = async (column) => {
   data.sortDirection = selectedSortDirection.value.sort;
   response = await getCommentList(data);
   comments.value = response.data.commentList;
+  paging.value = response.data.pagingUtil
 };
 
 const handleSemester = async () => {
   console.log(data.semester)
   response = await getCommentList(data);
   comments.value = response.data.commentList;
+  paging.value = response.data.pagingUtil;
 };
 
 const handleSearch = async () => {
@@ -258,7 +261,10 @@ const handleSearch = async () => {
     data.content = searchText.value;
 
   response = await getCommentList(data);
+  data.name = ''
+  data.content = ''
   comments.value = response.data.commentList;
+  paging.value = response.data.pagingUtil;
 };
 
 const clear = async () => {
@@ -271,6 +277,9 @@ const clear = async () => {
   data.content = '';
   data.column = 'createdDate';
   data.sortDirection = '';
+  searchText.value = '';
+  startDate.value = '';
+  endDate.value = '';
 
   console.log("data : " + data);
 
