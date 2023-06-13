@@ -194,10 +194,6 @@
                             </div>
                         </label>
                     </label>
-                    <div class="flex">
-                        <div class="text-sm opacity-50 overflow-hidden w-96">{{ i.previewContent }}</div>
-                        <span v-if="i.previewContent" class="text-sm opacity-50">...</span>
-                    </div>
                 </td>
                 <td>{{ i.views }}</td>
                 <td>{{ i.preCreatedDate }}</td>
@@ -247,6 +243,8 @@ const getPostList = async () => {
     paging.value = response.data.pagingUtil
     if(posts.value.length == 0){
         load.value = false
+    }else{
+      load.value = true
     }
 }
 
@@ -257,7 +255,7 @@ const init = async () => {
 init()
 
 const deleteListFunc = async () => {
-    let answer = confirm(`${checkList.value.length}명의 학생을 삭제하시겠습니까?`)
+    let answer = confirm(`${checkList.value.length}개의 게시글을 삭제하시겠습니까?`)
     if(answer){
         const postIds = checkList.value
         const id = {

@@ -41,14 +41,14 @@
             </button>
           </th>
           <th class="bg-base-100">
-            <button v-if="selectedSort.column !== 'status_name'" @click="clickSort('status_name')" class="flex">상태
+            <button v-if="selectedSort.column !== 'statusName'" @click="clickSort('statusName')" class="flex">상태
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5 opacity-0">
                 <path fill-rule="evenodd"
                       d="M10 15a.75.75 0 01-.75-.75V7.612L7.29 9.77a.75.75 0 01-1.08-1.04l3.25-3.5a.75.75 0 011.08 0l3.25 3.5a.75.75 0 11-1.08 1.04l-1.96-2.158v6.638A.75.75 0 0110 15z"
                       clip-rule="evenodd"/>
               </svg>
             </button>
-            <button v-if="selectedSort.column === 'status_name'" class="text-primary flex" @click="clickSort('status_name')">
+            <button v-if="selectedSort.column === 'statusName'" class="text-primary flex" @click="clickSort('statusName')">
               상태
               <svg v-if="selectedSort.direction === 'asc'" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
                    fill="currentColor" class="w-5 h-5">
@@ -132,6 +132,10 @@ const init = async () => {
   smsSendRequestDataList.value = response.data.smsSendRequestDataList
   pagingUtil.value = response.data.pagingUtil
   loading.value = false
+  startDate.value = ''
+  endDate.value = ''
+  selectedSort.value.direction = 'desc'
+  selectedSort.value.column = 'smsSendResponseId'
 }
 init()
 
