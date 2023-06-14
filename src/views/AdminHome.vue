@@ -188,12 +188,12 @@ const init = async () => {
 init()
 
 const clickPopularPost = (index) => {
-  let win = window.open(popularPostList.value[index].postUrl, '_blank');
+  let win = window.open(`${import.meta.env.VITE_DKLOG_URL}/post/${popularPostList.value[index].postId}`, '_blank');
   win.focus()
 }
 
 const clickRecentPost = (index) => {
-  let win = window.open(recentPostList.value[index].postUrl, '_blank');
+  let win = window.open(`${import.meta.env.VITE_DKLOG_URL}/post/${recentPostList.value[index].postId}`, '_blank');
   win.focus()
 }
 </script>
